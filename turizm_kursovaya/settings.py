@@ -11,10 +11,13 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+dotenv.load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -77,9 +80,13 @@ WSGI_APPLICATION = 'turizm_kursovaya.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
+        "NAME": "turizm_db",
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": "localhost",
+        "PORT": "5431",
         "OPTIONS": {
-            "service": "my_service",
-            "passfile": ".my_pgpass",
+            "pool": True,
         },
     }
 }
