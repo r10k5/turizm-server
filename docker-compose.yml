@@ -7,6 +7,7 @@ services:
 
   db:
     environment:
+      POSTGRES_DB: "turizm_db"
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_USER: ${DB_USER}
     image: postgres
