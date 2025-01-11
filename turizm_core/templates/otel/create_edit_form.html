@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if is_edit %}
+        Редактирование отеля
+    {% else %}
+        Добавление отеля
+    {% endif %}
+{% endblock title %}
+
+{% block content %}
+    <h1>
+        {% if is_edit %}
+        Редактирование отеля
+        {% else %}
+            Добавление отеля
+        {% endif %}
+    </h1>
+    <form action="POST">
+        {% if has_error %}
+            <p>Произошла ошибка! Проверьте правильность введённых данных</p>
+        {% endif %}
+
+        {{ form.as_p }}
+
+        <button type="submit">Сохранить</button>
+    </form>
+{% endblock content %}

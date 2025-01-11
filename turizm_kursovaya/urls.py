@@ -17,7 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from turizm_core import views
+from turizm_core.routes import otel
 
 urlpatterns = [
-    path("", views.index, name="Index")
+    path("", views.index, name="Index"),
+    path("otel", otel.otel_view, name="Create otel"),
 ]

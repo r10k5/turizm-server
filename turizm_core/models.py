@@ -31,7 +31,7 @@ class Otel(models.Model):
     opisanie = models.TextField()
     kolichestvo_zvezd = models.IntegerField()
     osobennosti = models.TextField()
-    photo = models.CharField(max_length=255)
+    photo = models.ImageField(upload_to="otels")
 
 class DannieAutorizatsii(models.Model):
     role = models.ForeignKey(Role, on_delete=models.PROTECT)
