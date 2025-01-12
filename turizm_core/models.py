@@ -8,7 +8,8 @@ class Address(models.Model):
         return f"{self.strana}, {self.gorod}"
 
 class Role(models.Model):
-    opisanie = models.CharField(max_length=100)
+    id = models.CharField(max_length=100, primary_key=True)
+    opisanie = models.TextField()
 
 class Zagranpasport(models.Model):
     nomer = models.IntegerField()

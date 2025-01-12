@@ -6,8 +6,8 @@
         <thead>
             <tr>
                 <th>Идентификатор</th>
-                <th>Название роли</th>
-                <th colspan="2">Действия</th>
+                <th>Описание роли</th>
+                <th>Действия</th>
             </tr>
         </thead>
         <tbody>
@@ -15,9 +15,6 @@
                 <tr>
                     <td>{{ role.id }}</td>
                     <td>{{ role.opisanie }}</td>
-                    <td>
-                        <a href="/roli/{{ role.id }}">Редактировать</a>
-                    </td>
                     <td>
                         <form
                             method="POST"

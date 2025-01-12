@@ -10,12 +10,6 @@ class RoleCreateView(CreateView):
     template_name = "role/create_view.html"
     success_url = "/roli"
 
-class RoleUpdateView(UpdateView):
-    form_class = RoleForm
-    model = Role
-    template_name = "role/update_view.html"
-    success_url = "/roli"
-
 class RoleDeleteView(DeleteView):
     model = Role
     success_url = "/roli"
