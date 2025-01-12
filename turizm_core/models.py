@@ -17,6 +17,18 @@ class Zagranpasport(models.Model):
     data_okonchania = models.DateField()
     scan_zagranpasporta = models.ImageField(upload_to="zagranpasports")
 
+    def __str__(self):
+        return f"Загранпаспорт №{self.nomer} от {self.data_vidachi.day}.{self.data_vidachi.month}.{self.data_vidachi.year}"
+
+    @property
+    def kem_kogda_vydan(self):
+        kogda = f"{self.data_vidachi.day}.{self.data_vidachi.month}.{self.data_vidachi.year}"
+        return f"{kogda} {self.organ_vidachi}"
+    
+    @property
+    def data_okonchania_formated(self):
+        return f"{self.data_okonchania.day}.{self.data_okonchania.month}.{self.data_okonchania.year}"
+
 class Pasport(models.Model):
     familia = models.CharField(max_length=100)
     imya = models.CharField(max_length=100)

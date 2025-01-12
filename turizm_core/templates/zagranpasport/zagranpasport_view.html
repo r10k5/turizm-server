@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Список загранпаспортов</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Идентификатор</th>
+                <th>Скан паспорта</th>
+                <th>Номер</th>
+                <th>Когда и кем выдан</th>
+                <th>Действителен до</th>
+                <th colspan="2">Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for zagranpasport in zagranpasporta %}
+                <tr>
+                    <td>{{ zagranpasport.id }}</td>
+                    <td>
+                        <a href="{{ zagranpasport.scan_zagranpasporta.url }}" target="_blank">
+                            <img src="{{ zagranpasport.scan_zagranpasporta.url }}" style="max-width: 150px;" />
+                        </a>
+                    </td>
+                    <td>{{ zagranpasport.nomer }}</td>
+                    <td style="max-width: 300px;">{{ zagranpasport.kem_kogda_vydan }}</td>
+                    <td>{{ zagranpasport.data_okonchania_formated }}</td>
+                    <td>
+                        <a href="/zagranpasporta/{{ zagranpasport.id }}">Редактировать</a>
+                    </td>
+                    <td>
+                        <form
+                            method="POST"
+                            action="/zagranpasport/delete/{{ zagranpasport.id }}"
+                            onsubmit="return confirm('Вы действительно хотите удалить загранпаспорт: {{ zagranpasport }}?')"
+                        >
+                            {% csrf_token %}
+
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br />
+    <a href="/zagranpasport">Добавить новый загранпаспорт</a>
+
+    <style>
+        th {
+            text-align: left;
+        }
+
+        th, td {
+            padding: 8px;
+        }
+
+        table, tr, td, th {
+            border: 1px solid black;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+    </style>
+{% endblock content %}
