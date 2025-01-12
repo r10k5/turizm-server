@@ -28,6 +28,26 @@ class Pasport(models.Model):
     organ_vidachi = models.CharField(max_length=255)
     scan_pasporta = models.ImageField(upload_to="pasports")
 
+    def __str__(self):
+        return f"{self.fio} {self.seria_nomer}"
+
+    @property
+    def fio(self):
+        return f"{self.imya} {self.familia} {self.otchestvo}"
+    
+    @property
+    def data_rojdenia_formated(self):
+        return f"{self.data_rojdenia.day}.{self.data_rojdenia.month}.{self.data_rojdenia.year}"
+    
+    @property
+    def seria_nomer(self):
+        return f"{self.seria} {self.nomer}"
+    
+    @property
+    def kem_kogda_vydan(self):
+        kogda = f"{self.data_vidachi.day}.{self.data_vidachi.month}.{self.data_vidachi.year}"
+        return f"{kogda} {self.organ_vidachi}"
+
 class Otel(models.Model):
     address = models.ForeignKey(Address, on_delete=models.PROTECT)
     nazvanie = models.CharField(max_length=100)

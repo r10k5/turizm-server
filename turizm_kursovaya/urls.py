@@ -18,7 +18,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from turizm_core import views
-from turizm_core.routes import address, otel, role
+from turizm_core.routes import address, otel, pasport, role
 
 urlpatterns = [
     path("", views.index),
@@ -37,4 +37,9 @@ urlpatterns = [
     path("roli", role.RoleView.as_view()),
     path("role/delete/<int:pk>", role.RoleDeleteView.as_view()),
     path("roli/<int:pk>", role.RoleUpdateView.as_view()),
+
+    path("pasport", pasport.PasportCreateView.as_view()),
+    path("pasporta", pasport.PasportView.as_view()),
+    path("pasport/delete/<int:pk>", pasport.PasportDeleteView.as_view()),
+    path("pasporta/<int:pk>", pasport.PasportUpdateView.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
