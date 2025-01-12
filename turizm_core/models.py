@@ -8,14 +8,14 @@ class Address(models.Model):
         return f"{self.strana}, {self.gorod}"
 
 class Role(models.Model):
-    opisanie = models.TextField()
+    opisanie = models.CharField(max_length=100)
 
 class Zagranpasport(models.Model):
     nomer = models.IntegerField()
     data_vidachi = models.DateField()
     organ_vidachi = models.CharField(max_length=255)
     data_okonchania = models.DateField()
-    scan_zagranpasporta = models.CharField(max_length=255)
+    scan_zagranpasporta = models.ImageField(upload_to="zagranpasports")
 
 class Pasport(models.Model):
     familia = models.CharField(max_length=100)
@@ -26,7 +26,7 @@ class Pasport(models.Model):
     nomer = models.IntegerField()
     data_vidachi = models.DateField()
     organ_vidachi = models.CharField(max_length=255)
-    scan_pasporta = models.CharField(max_length=255)
+    scan_pasporta = models.ImageField(upload_to="pasports")
 
 class Otel(models.Model):
     address = models.ForeignKey(Address, on_delete=models.PROTECT)
@@ -74,6 +74,6 @@ class Zakaz(models.Model):
 class ZakazPolzovatel(models.Model):
     zakaz = models.ForeignKey(Zakaz, on_delete=models.CASCADE)
     polzovatel = models.ForeignKey(Polzovatel, on_delete=models.CASCADE)
-    scan_dogovora = models.TextField()
+    scan_dogovora = models.ImageField(upload_to="dogovors")
     nomer_bileta_tuda = models.CharField(max_length=100)
     nomer_bileta_obratno = models.CharField(max_length=100)
