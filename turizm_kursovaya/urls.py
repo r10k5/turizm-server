@@ -17,9 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from turizm_core import views
-from turizm_core.routes import otel
+from turizm_core.routes import address, otel
 
 urlpatterns = [
-    path("", views.index, name="Index"),
-    path("otel", otel.otel_view, name="Create otel"),
+    path("", views.index),
+    path("otel", otel.OtelCreateView.as_view()),
+    path("address", address.AddressCreateFormView.as_view()),
+    path("addressa", address.AddressView.as_view()),
+    path("address/delete/<int:pk>", address.AddressDeleteFormView.as_view()),
+    path("adressa/<int:pk>", address.AddressUpdateFormView.as_view())
 ]

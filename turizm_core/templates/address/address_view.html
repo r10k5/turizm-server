@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Список адресов</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>№ п/п</th>
+                <th>Страна</th>
+                <th>Город</th>
+                <th colspan="2">Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for address in addressa %}
+                <tr>
+                    <td>{{ address.id }}</td>
+                    <td>{{ address.strana }}</td>
+                    <td>{{ address.gorod }}</td>
+                    <td>
+                        <a href="adressa/{{ address.id }}">Редактировать</a>
+                    </td>
+                    <td>
+                        <form
+                            method="POST"
+                            action="address/delete/{{ address.id }}"
+                            onsubmit="return confirm('Вы действительно хотите удалить адрес: {{ address.strana }}, {{ address.gorod }}?')"
+                        >
+                            {% csrf_token %}
+
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br />
+    <a href="/address">Добавить новый адрес</a>
+
+    <style>
+        th {
+            text-align: left;
+        }
+
+        th, td {
+            padding: 8px;
+        }
+
+        table, tr, td, th {
+            border: 1px solid black;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+    </style>
+{% endblock content %}

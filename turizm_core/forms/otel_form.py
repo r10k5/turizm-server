@@ -1,7 +1,7 @@
 from django import forms
 from turizm_core.models import Otel
 
-class CreateOtelForm(forms.ModelForm):
+class OtelForm(forms.ModelForm):
     class Meta:
         model = Otel
         fields = [
