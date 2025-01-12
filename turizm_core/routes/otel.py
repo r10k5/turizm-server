@@ -15,7 +15,7 @@ class OtelUpdateView(UpdateView):
     template_name = "otel/update_view.html"
     success_url = "/oteli"
 
-class OtelDeleteFormView(DeleteView):
+class OtelDeleteView(DeleteView):
     model = Otel
     success_url = "/oteli"
 

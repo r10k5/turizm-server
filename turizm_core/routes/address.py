@@ -4,18 +4,18 @@ from django.views.generic import CreateView, DeleteView, UpdateView
 from turizm_core.forms.address_form import AddressForm
 from turizm_core.models import Address
 
-class AddressCreateFormView(CreateView):
+class AddressCreateView(CreateView):
     form_class = AddressForm
     template_name = "address/create_view.html"
     success_url = "/addressa"
     
-class AddressUpdateFormView(UpdateView):
+class AddressUpdateView(UpdateView):
     form_class = AddressForm
     model = Address
     template_name = "address/update_view.html"
     success_url = "/addressa"
 
-class AddressDeleteFormView(DeleteView):
+class AddressDeleteView(DeleteView):
     model = Address
     success_url = "/addressa"
 
