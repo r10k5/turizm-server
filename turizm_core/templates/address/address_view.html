@@ -18,12 +18,12 @@
                     <td>{{ address.strana }}</td>
                     <td>{{ address.gorod }}</td>
                     <td>
-                        <a href="adressa/{{ address.id }}">Редактировать</a>
+                        <a href="/adressa/{{ address.id }}">Редактировать</a>
                     </td>
                     <td>
                         <form
                             method="POST"
-                            action="address/delete/{{ address.id }}"
+                            action="/address/delete/{{ address.id }}"
                             onsubmit="return confirm('Вы действительно хотите удалить адрес: {{ address.strana }}, {{ address.gorod }}?')"
                         >
                             {% csrf_token %}

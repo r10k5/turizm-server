@@ -55,6 +55,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'turizm_kursovaya.urls'
 MEDIA_ROOT = "media"
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

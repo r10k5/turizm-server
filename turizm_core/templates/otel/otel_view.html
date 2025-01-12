@@ -1,32 +1,42 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Список адресов</h1>
+    <h1>Список отелей</h1>
     <table>
         <thead>
             <tr>
                 <th>Идентификатор</th>
                 <th>Название</th>
+                <th>Фото</th>
                 <th>Описание</th>
+                <th>Адрес</th>
                 <th>Количество звёзд</th>
                 <th>Особенности</th>
                 <th colspan="2">Действия</th>
             </tr>
         </thead>
         <tbody>
-            {% for address in addressa %}
+            {% for otel in oteli %}
                 <tr>
-                    <td>{{ address.id }}</td>
-                    <td>{{ address.strana }}</td>
-                    <td>{{ address.gorod }}</td>
+                    <td>{{ otel.id }}</td>
+                    <td>{{ otel.nazvanie }}</td>
                     <td>
-                        <a href="otels/{{ address.id }}">Редактировать</a>
+                        <a href="{{ otel.photo.url }}" target="_blank">
+                            <img src="{{ otel.photo.url }}" style="max-width: 150px;" />
+                        </a>
+                    </td>
+                    <td style="max-width: 300px;">{{ otel.opisanie }}</td>
+                    <td style="max-wdith: 150px;">{{ otel.address }}</td>
+                    <td>{{ otel.kolichestvo_zvezd }}</td>
+                    <td style="max-width: 300px;">{{ otel.osobennosti }}</td>
+                    <td>
+                        <a href="/oteli/{{ otel.id }}">Редактировать</a>
                     </td>
                     <td>
                         <form
                             method="POST"
-                            action="otel/delete/{{ address.id }}"
-                            onsubmit="return confirm('Вы действительно хотите удалить адрес: {{ address.strana }}, {{ address.gorod }}?')"
+                            action="/otel/delete/{{ otel.id }}"
+                            onsubmit="return confirm('Вы действительно хотите удалить отель: {{ otel.nazvanie }}?')"
                         >
                             {% csrf_token %}
 
