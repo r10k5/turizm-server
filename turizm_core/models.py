@@ -11,6 +11,9 @@ class Role(models.Model):
     id = models.CharField(max_length=100, primary_key=True)
     opisanie = models.TextField()
 
+    def __str__(self):
+        return f"{self.id} ({self.opisanie:.50})"
+
 class Zagranpasport(models.Model):
     nomer = models.IntegerField()
     data_vidachi = models.DateField()
@@ -72,10 +75,13 @@ class Otel(models.Model):
 class DannieAutorizatsii(models.Model):
     role = models.ForeignKey(Role, on_delete=models.PROTECT)
     nomer_telephona =  models.CharField(max_length=15, unique=True)
-    rabochiy_nomer_telephona =  models.CharField(max_length=15, null=True)
-    rabochiy_emale = models.CharField(max_length=255, null=True) 
+    rabochiy_nomer_telephona = models.CharField(max_length=15, null=True, default=None)
+    rabochiy_emale = models.CharField(max_length=255, null=True, default=None)
     emale = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.emale} ({self.role.id})"
 
 class Turoperator(models.Model):
     dannie_autorizatsii = models.ForeignKey(DannieAutorizatsii, on_delete=models.CASCADE)
