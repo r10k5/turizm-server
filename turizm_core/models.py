@@ -91,9 +91,13 @@ class Turoperator(models.Model):
 
 class Polzovatel(models.Model):
     dannie_autorizatsii = models.ForeignKey(DannieAutorizatsii, on_delete=models.CASCADE)
-    pasport = models.ForeignKey(Pasport, null=True, on_delete=models.SET_NULL)
-    zagranpasport = models.ForeignKey(Zagranpasport, null=True, on_delete=models.SET_NULL)
+    pasport = models.ForeignKey(Pasport, null=True, on_delete=models.SET_NULL, default=None)
+    zagranpasport = models.ForeignKey(Zagranpasport, null=True, on_delete=models.SET_NULL, default=None)
     data_registatsii = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        fio = f" ({self.pasport.fio})" if self.pasport else ""
+        return f"Пользователь {self.dannie_autorizatsii.emale}{fio}"
 
 class Putevka(models.Model):
     turoperator = models.ForeignKey(Turoperator, on_delete=models.CASCADE)
