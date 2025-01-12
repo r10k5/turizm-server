@@ -5,7 +5,7 @@
         {% block header %}
         {% endblock header %}
     </h1>
-    <form method="POST">
+    <form method="POST" enctype="{% block form_enctype %}application/x-www-form-urlencoded{% endblock form_enctype %}">
         {% csrf_token %}
 
         {{ form.as_p }}

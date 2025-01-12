@@ -6,8 +6,10 @@
         <thead>
             <tr>
                 <th>Идентификатор</th>
-                <th>Страна</th>
-                <th>Город</th>
+                <th>Название</th>
+                <th>Описание</th>
+                <th>Количество звёзд</th>
+                <th>Особенности</th>
                 <th colspan="2">Действия</th>
             </tr>
         </thead>
@@ -18,12 +20,12 @@
                     <td>{{ address.strana }}</td>
                     <td>{{ address.gorod }}</td>
                     <td>
-                        <a href="adressa/{{ address.id }}">Редактировать</a>
+                        <a href="otels/{{ address.id }}">Редактировать</a>
                     </td>
                     <td>
                         <form
                             method="POST"
-                            action="address/delete/{{ address.id }}"
+                            action="otel/delete/{{ address.id }}"
                             onsubmit="return confirm('Вы действительно хотите удалить адрес: {{ address.strana }}, {{ address.gorod }}?')"
                         >
                             {% csrf_token %}
@@ -36,7 +38,7 @@
         </tbody>
     </table>
     <br />
-    <a href="/address">Добавить новый адрес</a>
+    <a href="/otel">Добавить новый отель</a>
 
     <style>
         th {

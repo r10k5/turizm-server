@@ -4,6 +4,9 @@ class Address(models.Model):
     strana = models.CharField(max_length=100)
     gorod = models.CharField(max_length=255)
 
+    def __str__(self):
+        return f"{self.strana}, {self.gorod}"
+
 class Role(models.Model):
     opisanie = models.TextField()
 

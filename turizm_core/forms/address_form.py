@@ -11,3 +11,11 @@ class AddressForm(forms.ModelForm):
             "strana": "Страна",
             "gorod": "Город",
         }
+        error_messages = {
+            "strana": {
+                "required": "Это поле не должно быть пустым"
+            },
+            "gorod": {
+                "required": "Это поле не должно быть пустым"
+            }
+        }
