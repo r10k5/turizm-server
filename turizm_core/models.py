@@ -89,6 +89,9 @@ class Turoperator(models.Model):
     kpp = models.CharField(max_length=20)
     nazvanie_companii = models.CharField(max_length=255)
 
+    def __str__(self):
+        return f"Туроператор {self.dannie_autorizatsii.emale} ({self.nazvanie_companii})"
+
 class Polzovatel(models.Model):
     dannie_autorizatsii = models.ForeignKey(DannieAutorizatsii, on_delete=models.CASCADE)
     pasport = models.ForeignKey(Pasport, null=True, on_delete=models.SET_NULL, default=None)
