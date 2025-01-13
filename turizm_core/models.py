@@ -72,6 +72,9 @@ class Otel(models.Model):
     osobennosti = models.TextField()
     photo = models.ImageField(upload_to="otels")
 
+    def __str__(self):
+        return f"{self.nazvanie}"
+
 class DannieAutorizatsii(models.Model):
     role = models.ForeignKey(Role, on_delete=models.PROTECT)
     nomer_telephona =  models.CharField(max_length=15, unique=True)
@@ -110,6 +113,29 @@ class Putevka(models.Model):
     stoimost = models.IntegerField()
     data_vremya_zaselenia = models.DateTimeField()
     data_vremya_viselenia = models.DateTimeField()
+
+    def __str__(self):
+        data_s = f"{self.data_vremya_otpravlenia.day}.{self.data_vremya_otpravlenia.month}.{self.data_vremya_otpravlenia.year}"
+        data_do = f"{self.data_vremya_vozvrashenia.day}.{self.data_vremya_vozvrashenia.month}.{self.data_vremya_vozvrashenia.year}"
+        return f"Путёвка с {data_s} до {data_do} ({self.turoperator})"
+
+    @property
+    def daty_reisov(self):
+        data_s = f"{self.data_vremya_otpravlenia.day}.{self.data_vremya_otpravlenia.month}.{self.data_vremya_otpravlenia.year}"
+        vremya_s = f"{self.data_vremya_otpravlenia.hour} ч. {self.data_vremya_otpravlenia.minute} мин."
+        data_do = f"{self.data_vremya_vozvrashenia.day}.{self.data_vremya_vozvrashenia.month}.{self.data_vremya_vozvrashenia.year}"
+        vremya_do = f"{self.data_vremya_vozvrashenia.hour} ч. {self.data_vremya_vozvrashenia.minute} мин."
+
+        return f"Отправление: {data_s} {vremya_s} Возвращение: {data_do} {vremya_do}"
+    
+    @property
+    def otel_period(self):
+        data_s = f"{self.data_vremya_zaselenia.day}.{self.data_vremya_zaselenia.month}.{self.data_vremya_zaselenia.year}"
+        vremya_s = f"{self.data_vremya_zaselenia.hour} ч. {self.data_vremya_zaselenia.minute} мин."
+        data_do = f"{self.data_vremya_viselenia.day}.{self.data_vremya_viselenia.month}.{self.data_vremya_viselenia.year}"
+        vremya_do = f"{self.data_vremya_viselenia.hour} ч. {self.data_vremya_viselenia.minute} мин."
+
+        return f"Заселение: {data_s} {vremya_s} Выселение: {data_do} {vremya_do}"
 
 class Zakaz(models.Model):
     putevka = models.ForeignKey(Putevka, on_delete=models.CASCADE)

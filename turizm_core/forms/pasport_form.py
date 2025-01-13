@@ -23,6 +23,7 @@ class PasportForm(ModelForm):
             "invalid": "Должна быть указана корректная дата"
         }
     )
+
     class Meta:
         model = Pasport
         fields = [

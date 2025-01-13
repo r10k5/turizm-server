@@ -18,7 +18,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from turizm_core import views
-from turizm_core.routes import address, dannie_autorizatsii, otel, pasport, role, turoperator, zagranpasport, polzovatel
+from turizm_core.routes import address, dannie_autorizatsii, otel, pasport, putevka, role, turoperator, zagranpasport, polzovatel
 
 urlpatterns = [
     path("", views.index),
@@ -61,4 +61,9 @@ urlpatterns = [
     path("turoperatori", turoperator.TuroperatorView.as_view()),
     path("turoperator/delete/<int:pk>", turoperator.TuroperatorDeleteView.as_view()),
     path("turoperatori/<int:pk>", turoperator.TuroperatorUpdateView.as_view()),
+
+    path("putevka", putevka.PutevkaCreateView.as_view()),
+    path("putevki", putevka.PutevkaView.as_view()),
+    path("putevka/delete/<int:pk>", putevka.PutevkaDeleteView.as_view()),
+    path("putevki/<int:pk>", putevka.PutevkaUpdateView.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
