@@ -171,3 +171,10 @@ class ZakazPolzovatel(models.Model):
     scan_dogovora = models.ImageField(upload_to="dogovors")
     nomer_bileta_tuda = models.CharField(max_length=100)
     nomer_bileta_obratno = models.CharField(max_length=100)
+
+    def __str__(self):
+        if self.polzovatel.pasport:
+            imya_polzovatelya = self.polzovatel.pasport.fio
+        else:
+            imya_polzovatelya = self.polzovatel.dannie_autorizatsii.emale
+        return f"{self.zakaz} пользователя {imya_polzovatelya}"

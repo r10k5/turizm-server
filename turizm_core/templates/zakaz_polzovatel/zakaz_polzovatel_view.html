@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Список заказов пользователей</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Идентификатор</th>
+                <th>Пользователь</th>
+                <th>Заказ</th>
+                <th>Скан договора</th>
+                <th>Номер билета туда</th>
+                <th>Номер билета обратно</th>
+                <th colspan="2">Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for zakaz_polzovatel in zakazi_polzovateley %}
+                <tr>
+                    <td>{{ zakaz_polzovatel.id }}</td>
+                    <td>{{ zakaz_polzovatel.polzovatel }}</td>
+                    <td>{{ zakaz_polzovatel.zakaz }}</td>
+                    <td>
+                        <a href="{{ zakaz_polzovatel.scan_dogovora.url }}" target="_blank">
+                            <img src="{{ zakaz_polzovatel.scan_dogovora.url }}" style="max-width: 150px;" />
+                        </a>
+                    </td>
+                    <td>{{ zakaz_polzovatel.nomer_bileta_tuda }}</td>
+                    <td>{{ zakaz_polzovatel.nomer_bileta_obratno }}</td>
+                    <td>
+                        <a href="/zakazi_polzovateley/{{ zakaz_polzovatel.id }}">Редактировать</a>
+                    </td>
+                    <td>
+                        <form
+                            method="POST"
+                            action="/zakaz_polzovatel/delete/{{ zakaz_polzovatel.id }}"
+                            onsubmit="return confirm('Вы действительно хотите удалить заказ пользователя: {{ zakaz_polzovatel }}?')"
+                        >
+                            {% csrf_token %}
+
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br />
+    <a href="/zakaz_polzovatel">Добавить новый заказ пользователя</a>
+
+    <style>
+        th {
+            text-align: left;
+        }
+
+        th, td {
+            padding: 8px;
+        }
+
+        table, tr, td, th {
+            border: 1px solid black;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+    </style>
+{% endblock content %}
