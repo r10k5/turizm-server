@@ -137,11 +137,33 @@ class Putevka(models.Model):
 
         return f"Заселение: {data_s} {vremya_s} Выселение: {data_do} {vremya_do}"
 
+STATUSY_ZAKAZA = [
+    "В обработке",
+    "Ожидает документы",
+    "Ожидает оплаты",
+    "Подтверждён",
+    "Услуга оказана",
+]
+
 class Zakaz(models.Model):
     putevka = models.ForeignKey(Putevka, on_delete=models.CASCADE)
     data_sozdania = models.DateField(auto_now_add=True)
     status = models.IntegerField()
-    dop_info = models.TextField()
+    dop_info = models.TextField(default="")
+
+    def __str__(self):
+        return f"Заказ №{self.id} от {self.data_sozdania_formated}"
+
+    @property
+    def data_sozdania_formated(self):
+        return f"{self.data_sozdania.day}.{self.data_sozdania.month}.{self.data_sozdania.year}"
+    
+    @property
+    def status_formated(self):
+        if self.status > len(STATUSY_ZAKAZA) - 1:
+            return "Неизвестно"
+        
+        return STATUSY_ZAKAZA[self.status]
 
 class ZakazPolzovatel(models.Model):
     zakaz = models.ForeignKey(Zakaz, on_delete=models.CASCADE)
