@@ -1,0 +1,84 @@
+[
+    {
+        "model": "turizm_core.role",
+        "pk": "admin",
+        "fields": {
+            "opisanie": "Администратор"
+        }
+    },
+    {
+        "model": "turizm_core.role",
+        "pk": "manager",
+        "fields": {
+            "opisanie": "Менеджер по продажам"
+        }
+    },
+    {
+        "model": "turizm_core.role",
+        "pk": "tour_operator",
+        "fields": {
+            "opisanie": "Туроператор"
+        }
+    },
+    {
+        "model": "turizm_core.dannieautorizatsii",
+        "pk": 1,
+        "fields": {
+            "is_active": true,
+            "is_staff": true,
+            "is_superuser": true,
+            "username": "admin",
+            "password": "pbkdf2_sha256$870000$z4lezCtk0YpTVYTYGmHmjs$7MPpXj1T8hTDOWJyrZxt7vPi6PnkxRttbjWFWUKnbds=",
+            "date_joined": "2025-01-25T12:00:00Z",
+            "role": "admin"
+        }
+    },
+    {
+        "model": "turizm_core.dannieautorizatsii",
+        "pk": 2,
+        "fields": {
+            "is_active": true,
+            "is_staff": false,
+            "is_superuser": false,
+            "username": "manager",
+            "password": "pbkdf2_sha256$870000$z4lezCtk0YpTVYTYGmHmjs$7MPpXj1T8hTDOWJyrZxt7vPi6PnkxRttbjWFWUKnbds=",
+            "date_joined": "2025-01-25T12:00:00Z",
+            "role": "manager",
+            "nomer_telephona": "+79999999999",
+            "email": "manager@example.com"
+        }
+    },
+    {
+        "model": "turizm_core.polzovatel",
+        "pk": 1,
+        "fields": {
+            "data_registatsii": "2025-01-25",
+            "dannie_autorizatsii": 2
+        }
+    },
+    {
+        "model": "turizm_core.dannieautorizatsii",
+        "pk": 3,
+        "fields": {
+            "is_active": true,
+            "is_staff": false,
+            "is_superuser": false,
+            "username": "TourOperator",
+            "password": "pbkdf2_sha256$870000$z4lezCtk0YpTVYTYGmHmjs$7MPpXj1T8hTDOWJyrZxt7vPi6PnkxRttbjWFWUKnbds=",
+            "date_joined": "2025-01-25T12:00:00Z",
+            "role": "tour_operator",
+            "nomer_telephona": "+78888888888",
+            "email": "tour_operator@example.com"
+        }
+    },
+    {
+        "model": "turizm_core.turoperator",
+        "pk": 1,
+        "fields": {
+            "dannie_autorizatsii": 3,
+            "nazvanie_companii": "OOO TourOperator",
+            "inn": "1234567890",
+            "kpp": "1234567890"
+        }
+    }
+]
