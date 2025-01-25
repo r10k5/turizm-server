@@ -21,20 +21,22 @@
                     <td>{{ putevka.stoimost }}</td>
                     <td>{{ putevka.daty_reisov }}</td>
                     <td>{{ putevka.otel_period }}</td>
-                    <td>
+                    <td colspan="{% if user.role.id != 'tour_operator' %}2{% else %}1{% endif %}">
                         <a href="/putevki/{{ putevka.id }}">Редактировать</a>
                     </td>
+                    {% if user.role.id != 'tour_operator' %}
                     <td>
-                        <form
-                            method="POST"
-                            action="/putevka/delete/{{ putevka.id }}"
-                            onsubmit="return confirm('Вы действительно хотите удалить адрес: {{ putevka }}?')"
-                        >
-                            {% csrf_token %}
+                            <form
+                                method="POST"
+                                action="/putevka/delete/{{ putevka.id }}"
+                                onsubmit="return confirm('Вы действительно хотите удалить адрес: {{ putevka }}?')"
+                            >
+                                {% csrf_token %}
 
-                            <button type="submit">Удалить</button>
-                        </form>
+                                <button type="submit">Удалить</button>
+                            </form>
                     </td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </tbody>
