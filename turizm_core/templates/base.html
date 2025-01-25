@@ -34,6 +34,16 @@
             display: flex;
             flex-direction: column;
         }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
     </style>
     {% block head %}
     {% endblock head %}

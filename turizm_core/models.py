@@ -5,6 +5,9 @@ class Address(models.Model):
     strana = models.CharField(max_length=100)
     gorod = models.CharField(max_length=255)
 
+    class Meta:
+        unique_together = ('strana', 'gorod')
+
     def __str__(self):
         return f"{self.strana}, {self.gorod}"
 
