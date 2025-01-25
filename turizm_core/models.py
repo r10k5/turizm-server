@@ -120,14 +120,24 @@ class Putevka(models.Model):
         return f"Путёвка с {self.data_vremya_otpravlenia.strftime('%d.%m.%Y')} до {self.data_vremya_vozvrashenia.strftime('%d.%m.%Y')} ({self.turoperator})"
 
     @property
-    def daty_reisov(self):
-        return (f"Отправление: {self.data_vremya_otpravlenia.strftime('%d.%m.%Y %H:%M')} "
-                f"Возвращение: {self.data_vremya_vozvrashenia.strftime('%d.%m.%Y %H:%M')}")
+    def data_otpravlenia_formated(self):
+        return self.data_vremya_otpravlenia.strftime('%d.%m.%Y %H:%M')
 
     @property
-    def otel_period(self):
-        return (f"Заселение: {self.data_vremya_zaselenia.strftime('%d.%m.%Y %H:%M')} "
-                f"Выселение: {self.data_vremya_viselenia.strftime('%d.%m.%Y %H:%M')}")
+    def data_vozvrashenia_formated(self):
+        return self.data_vremya_vozvrashenia.strftime('%d.%m.%Y %H:%M')
+
+    @property
+    def data_zaselenia_formated(self):
+        return self.data_vremya_zaselenia.strftime('%d.%m.%Y %H:%M')
+
+    @property
+    def data_viselenia_formated(self):
+        return self.data_vremya_viselenia.strftime('%d.%m.%Y %H:%M')
+    
+    @property
+    def stoimost_formated(self):
+        return f"{self.stoimost:,} ₽".replace(",", " ")
 
 STATUSY_ZAKAZA = [
     "В обработке менеджером",
