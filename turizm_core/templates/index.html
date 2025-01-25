@@ -2,41 +2,50 @@
 
 {% block content %}
 <div>
-    <h1>Редактор БД</h1>
+    <h1>Фирма "ToRest"</h1>
     <ul>
+        {% if user.role.id == 'tour_operator' %}
         <li>
-            <a href="/addressa">Адреса</a>
+            <a href="/turoperator/orders">Заказы</a>
         </li>
-        <li>
-            <a href="/oteli">Отели</a>
-        </li>
-        <li>
-            <a href="/roli">Роли</a>
-        </li>
-        <li>
-            <a href="/pasporta">Паспорта</a>
-        </li>
-        <li>
-            <a href="/zagranpasporta">Загранпаспорта</a>
-        </li>
-        <li>
-            <a href="/dannie-autorizatsii">Данные авторизации</a>
-        </li>
-        <li>
-            <a href="/polzovateli">Пользователи</a>
-        </li>
-        <li>
-            <a href="/turoperatori">Туроператоры</a>
-        </li>
-        <li>
-            <a href="/putevki">Путёвки</a>
-        </li>
-        <li>
-            <a href="/zakazi">Заказы</a>
-        </li>
-        <li>
-            <a href="/zakazi_polzovateley">Заказы пользователей</a>
-        </li>
+        {% endif %}
+        {% if user.role == 'admin' %}
+            <li>
+                <a href="/addressa">Адреса</a>
+            </li>
+            <li>
+                <a href="/oteli">Отели</a>
+            </li>
+            <li>
+                <a href="/roli">Роли</a>
+            </li>
+            <li>
+                <a href="/pasporta">Паспорта</a>
+            </li>
+            <li>
+                <a href="/zagranpasporta">Загранпаспорта</a>
+            </li>
+            <li>
+                <a href="/dannie-autorizatsii">Данные авторизации</a>
+            </li>
+            <li>
+                <a href="/polzovateli">Пользователи</a>
+            </li>
+            <li>
+                <a href="/turoperatori">Туроператоры</a>
+            </li>
+            <li>
+                <a href="/zakazi">Заказы</a>
+            </li>
+            <li>
+                <a href="/zakazi_polzovateley">Заказы пользователей</a>
+            </li>
+        {% endif %}
+        {% if user %}
+            <li>
+                <a href="/putevki">Путёвки</a>
+            </li>
+        {% endif %}
     </ul>
 </div>
 {% endblock content %}

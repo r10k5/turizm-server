@@ -2,8 +2,9 @@ from django.shortcuts import render
 from django.views import View
 from django.views.generic import CreateView, DeleteView, UpdateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import user_passes_test
 from django.utils.decorators import method_decorator
+
+from turizm_core.helpers import is_tour_operator
 
 from turizm_core.forms.turoperator_form import TuroperatorForm
 from turizm_core.models import Turoperator, Zakaz
@@ -35,7 +36,7 @@ class TuroperatorView(View):
             }
         )
 
-@method_decorator(user_passes_test(lambda u: u.role.id == 'tour_operator'), name='dispatch')
+@method_decorator(is_tour_operator, name='dispatch')
 class TuroperatorOrdersView(LoginRequiredMixin, ListView):
     model = Zakaz
     template_name = "turoperator/orders_view.html"
