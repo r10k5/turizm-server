@@ -20,7 +20,7 @@ from django.urls import path
 from turizm_core import views
 from turizm_core.routes import address, dannie_autorizatsii, otel, pasport, putevka, role, turoperator, zagranpasport, polzovatel, zakaz, zakaz_polzovatel
 from turizm_core.routes.auth import login_view
-from turizm_core.routes.turoperator import TuroperatorOrdersView
+from turizm_core.routes.turoperator import TuroperatorCancelOrderView, TuroperatorConfirmOrderView, TuroperatorOrdersView
 
 urlpatterns = [
     path("", views.index),
@@ -64,7 +64,9 @@ urlpatterns = [
     path("turoperator/delete/<int:pk>", turoperator.TuroperatorDeleteView.as_view()),
     path("turoperatori/<int:pk>", turoperator.TuroperatorUpdateView.as_view()),
 
-    path("turoperator/orders", TuroperatorOrdersView.as_view(), name="turoperator_orders"),
+    path("turoperator/orders", TuroperatorOrdersView.as_view()),
+    path("turoperator/orders/confirm/<int:zakaz_id>", TuroperatorConfirmOrderView.as_view()),
+    path("turoperator/orders/cancel/<int:zakaz_id>", TuroperatorCancelOrderView.as_view()),
 
     path("putevka", putevka.PutevkaCreateView.as_view()),
     path("putevki", putevka.PutevkaView.as_view()),

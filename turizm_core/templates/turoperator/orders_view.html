@@ -6,32 +6,195 @@
 
 {% block head %}
     <style>
-        
+        .order-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .order-card {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 250px;
+            height: 300px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            transition: box-shadow 0.2s;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .order-card:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border: 1px solid #4CAF50;
+        }
+        .order-card .order-id {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .order-card .order-date {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-align: right;
+        }
+        .order-card .order-status {
+            font-style: italic;
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px 10px;
+            margin-top: 0;
+            border-radius: 0 5px 5px 0;
+            border-left: 5px solid transparent;
+        }
+        .order-card .order-status.pending {
+            background-color: #ffff99;
+            color: #000;
+            border-left-color: #ffcc00;
+        }
+        .order-card .order-status.canceled {
+            background-color: #ffcccc;
+            color: #000;
+            border-left-color: #ff3737;
+        }
+        .order-card .order-status.confirmed {
+            background-color: #ccffcc;
+            color: #000;
+            border-left-color: #33cc33;
+        }
+        .order-card .order-info-container {
+            margin-top: auto;
+            font-size: 14px;
+        }
+        .order-card .order-info {
+            margin-top: auto;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            line-clamp: 3;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            height: calc(1rem * 3);
+        }
+        .order-card .order-users-count {
+            font-size: 14px;
+            margin-top: auto;
+            margin-bottom: 10px;
+            color: #666;
+        }
+        .order-card-header {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+        }
+        .order-card-content {
+            padding: 20px 0 0 0;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .order-card .cancel-form {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+        .order-card .cancel-btn {
+            background-color: #f44336;
+            color: #fff;
+            border: none;
+            border-radius: 100%;
+            width: 24px;
+            height: 24px;
+            opacity: 0;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .order-card:hover .cancel-btn {
+            opacity: 1;
+        }
+        .order-card .cancel-btn:hover {
+            transform: scale(1.5);
+        }
+        .order-card .confirmation-form {
+            margin-top: auto;
+        }
+        .filter-btns {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .filter-btn {
+            color: #000;
+            margin: 0 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-decoration: none;
+        }
+        .filter-btn:hover {
+            background-color: #e0e0e0;
+        }
+        .filter-btn.active {
+            background-color: #4CAF50;
+            color: #fff;
+        }
     </style>
 {% endblock %}
 
 {% block content %}
     <h1>Список заказов</h1>
-    {{ current_user }}
-    {{ user }}
-    <table>
-        <tr>
-            <th>ID Заказа</th>
-            <th>Дата создания</th>
-            <th>Статус</th>
-            <th>Дополнительная информация</th>
-        </tr>
+    <div class="filter-btns">
+        <a class="filter-btn {% if filter == 'all' %}active{% endif %}" href="?filter=all">Все</a>
+        <a class="filter-btn {% if filter == 'pending' %}active{% endif %}" href="?filter=pending">Ожидают подтверждения</a>
+        <a class="filter-btn {% if filter == 'confirmed' %}active{% endif %}" href="?filter=confirmed">Подтверждённые</a>
+        <a class="filter-btn {% if filter == 'canceled' %}active{% endif %}" href="?filter=canceled">Отменённые</a>
+    </div>
+    <div class="order-cards">
         {% for zakaz in zakazy %}
-        <tr>
-            <td>{{ zakaz.id }}</td>
-            <td>{{ zakaz.data_sozdania_formated }}</td>
-            <td>{{ zakaz.status_formated }}</td>
-            <td>{{ zakaz.dop_info }}</td>
-        </tr>
+        <div class="order-card" data-status="{{ zakaz.status_formated }}">
+            {% if zakaz.status != 6 and zakaz.status != 4 %}
+                <form class="cancel-form" action="orders/cancel/{{ zakaz.id }}" method="post">
+                    {% csrf_token %}
+                    <button class="cancel-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" fill="currentColor"/>
+                        </svg>
+                    </button>
+                </form>
+            {% endif %}
+            <div class="order-card-header">
+                <h2 class="order-id">Заказ №{{ zakaz.id }}</h2>
+                <p class="order-date">{{ zakaz.data_sozdania_formated }}</p>
+            </div>
+            <div class="order-card-content">
+                <p class="order-status {% if zakaz.status == 4 %}confirmed{% elif zakaz.status == 6 %}canceled{% else %}pending{% endif %}">{{ zakaz.status_formated }}</p>
+
+                <div class="order-info-container">
+                    <p class="order-info">{{ zakaz.dop_info }}</p>
+                    <p class="order-users-count">Количество пользователей: {{ zakaz.polzovateley_count }}</p>
+                    
+                    {% if zakaz.status != 6 and zakaz.status != 4 %}
+                        <form class="confirmation-form" action="orders/confirm/{{ zakaz.id }}" method="post">
+                            {% csrf_token %}
+                            <button class="confirm-btn" type="submit">Подтвердить</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
         {% empty %}
-        <tr>
-            <td colspan="4">Нет заказов.</td>
-        </tr>
+        <p>Нет заказов.</p>
         {% endfor %}
-    </table>
+    </div>
 {% endblock %}

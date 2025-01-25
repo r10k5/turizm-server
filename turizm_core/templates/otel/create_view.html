@@ -9,13 +9,3 @@
 {% block header %}
     Добавление отеля
 {% endblock header %}
-
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <label for="strana">Страна:</label>
-    <input type="text" name="strana" required>
-    <label for="gorod">Город:</label>
-    <input type="text" name="gorod" required>
-    <button type="submit">Создать отель</button>
-</form>

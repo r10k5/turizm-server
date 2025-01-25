@@ -9,7 +9,7 @@
             <a href="/turoperator/orders">Заказы</a>
         </li>
         {% endif %}
-        {% if user.role == 'admin' %}
+        {% if user.role.id == 'admin' %}
             <li>
                 <a href="/addressa">Адреса</a>
             </li>
