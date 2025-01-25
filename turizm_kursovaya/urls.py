@@ -68,6 +68,7 @@ urlpatterns = [
     path("turoperator/orders/confirm/<int:zakaz_id>", TuroperatorConfirmOrderView.as_view()),
     path("turoperator/orders/cancel/<int:zakaz_id>", TuroperatorCancelOrderView.as_view()),
 
+    path("putevka/report", putevka.PutevkaReportView.as_view()),
     path("putevka", putevka.PutevkaCreateView.as_view()),
     path("putevki", putevka.PutevkaView.as_view()),
     path("putevka/delete/<int:pk>", putevka.PutevkaDeleteView.as_view()),

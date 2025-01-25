@@ -116,11 +116,22 @@
             font-weight: bold;
             line-height: 1;
         }
+        .putevka-report-link {
+            margin-top: 20px;
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
     </style>
 {% endblock %}
 
 {% block content %}
     <h1>Список путёвок</h1>
+    <a class="putevka-report-link" href="/putevka/report">Сформировать отчёт</a>
     <div class="putevka-cards">
         <div class="putevka-card add-putevka-card" onclick="window.location.href='/putevka'">
             <div class="plus-icon">+</div>

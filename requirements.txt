@@ -2,3 +2,4 @@ Django==5.1.4
 psycopg[pool,binary]==3.2.3
 python-dotenv==1.0.1
 pillow==11.1.0
+fpdf2==2.8.2
