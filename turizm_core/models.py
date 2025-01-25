@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 
 class Address(models.Model):
     strana = models.CharField(max_length=100)
@@ -26,16 +27,15 @@ class Zagranpasport(models.Model):
     scan_zagranpasporta = models.ImageField(upload_to="zagranpasports")
 
     def __str__(self):
-        return f"Загранпаспорт №{self.nomer} от {self.data_vidachi.day}.{self.data_vidachi.month}.{self.data_vidachi.year}"
+        return f"Загранпаспорт №{self.nomer} от {self.data_vidachi.strftime('%d.%m.%Y')}"
 
     @property
     def kem_kogda_vydan(self):
-        kogda = f"{self.data_vidachi.day}.{self.data_vidachi.month}.{self.data_vidachi.year}"
-        return f"{kogda} {self.organ_vidachi}"
+        return f"{self.data_vidachi.strftime('%d.%m.%Y')} {self.organ_vidachi}"
     
     @property
     def data_okonchania_formated(self):
-        return f"{self.data_okonchania.day}.{self.data_okonchania.month}.{self.data_okonchania.year}"
+        return self.data_okonchania.strftime('%d.%m.%Y')
 
 class Pasport(models.Model):
     familia = models.CharField(max_length=100)
@@ -57,7 +57,7 @@ class Pasport(models.Model):
     
     @property
     def data_rojdenia_formated(self):
-        return f"{self.data_rojdenia.day}.{self.data_rojdenia.month}.{self.data_rojdenia.year}"
+        return self.data_rojdenia.strftime('%d.%m.%Y')
     
     @property
     def seria_nomer(self):
@@ -65,8 +65,7 @@ class Pasport(models.Model):
     
     @property
     def kem_kogda_vydan(self):
-        kogda = f"{self.data_vidachi.day}.{self.data_vidachi.month}.{self.data_vidachi.year}"
-        return f"{kogda} {self.organ_vidachi}"
+        return f"{self.data_vidachi.strftime('%d.%m.%Y')} {self.organ_vidachi}"
 
 class Otel(models.Model):
     address = models.ForeignKey(Address, on_delete=models.PROTECT)
@@ -118,27 +117,17 @@ class Putevka(models.Model):
     data_vremya_viselenia = models.DateTimeField()
 
     def __str__(self):
-        data_s = f"{self.data_vremya_otpravlenia.day}.{self.data_vremya_otpravlenia.month}.{self.data_vremya_otpravlenia.year}"
-        data_do = f"{self.data_vremya_vozvrashenia.day}.{self.data_vremya_vozvrashenia.month}.{self.data_vremya_vozvrashenia.year}"
-        return f"Путёвка с {data_s} до {data_do} ({self.turoperator})"
+        return f"Путёвка с {self.data_vremya_otpravlenia.strftime('%d.%m.%Y')} до {self.data_vremya_vozvrashenia.strftime('%d.%m.%Y')} ({self.turoperator})"
 
     @property
     def daty_reisov(self):
-        data_s = f"{self.data_vremya_otpravlenia.day}.{self.data_vremya_otpravlenia.month}.{self.data_vremya_otpravlenia.year}"
-        vremya_s = f"{self.data_vremya_otpravlenia.hour} ч. {self.data_vremya_otpravlenia.minute} мин."
-        data_do = f"{self.data_vremya_vozvrashenia.day}.{self.data_vremya_vozvrashenia.month}.{self.data_vremya_vozvrashenia.year}"
-        vremya_do = f"{self.data_vremya_vozvrashenia.hour} ч. {self.data_vremya_vozvrashenia.minute} мин."
+        return (f"Отправление: {self.data_vremya_otpravlenia.strftime('%d.%m.%Y %H:%M')} "
+                f"Возвращение: {self.data_vremya_vozvrashenia.strftime('%d.%m.%Y %H:%M')}")
 
-        return f"Отправление: {data_s} {vremya_s} Возвращение: {data_do} {vremya_do}"
-    
     @property
     def otel_period(self):
-        data_s = f"{self.data_vremya_zaselenia.day}.{self.data_vremya_zaselenia.month}.{self.data_vremya_zaselenia.year}"
-        vremya_s = f"{self.data_vremya_zaselenia.hour} ч. {self.data_vremya_zaselenia.minute} мин."
-        data_do = f"{self.data_vremya_viselenia.day}.{self.data_vremya_viselenia.month}.{self.data_vremya_viselenia.year}"
-        vremya_do = f"{self.data_vremya_viselenia.hour} ч. {self.data_vremya_viselenia.minute} мин."
-
-        return f"Заселение: {data_s} {vremya_s} Выселение: {data_do} {vremya_do}"
+        return (f"Заселение: {self.data_vremya_zaselenia.strftime('%d.%m.%Y %H:%M')} "
+                f"Выселение: {self.data_vremya_viselenia.strftime('%d.%m.%Y %H:%M')}")
 
 STATUSY_ZAKAZA = [
     "В обработке менеджером",
@@ -161,7 +150,7 @@ class Zakaz(models.Model):
 
     @property
     def data_sozdania_formated(self):
-        return f"{self.data_sozdania.day}.{self.data_sozdania.month}.{self.data_sozdania.year}"
+        return self.data_sozdania.strftime('%d.%m.%Y')
     
     @property
     def status_formated(self):
