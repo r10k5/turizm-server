@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 class Address(models.Model):
     strana = models.CharField(max_length=100)
@@ -75,16 +76,15 @@ class Otel(models.Model):
     def __str__(self):
         return f"{self.nazvanie}"
 
-class DannieAutorizatsii(models.Model):
+class DannieAutorizatsii(AbstractUser):
     role = models.ForeignKey(Role, on_delete=models.PROTECT)
     nomer_telephona =  models.CharField(max_length=15, unique=True)
     rabochiy_nomer_telephona = models.CharField(max_length=15, null=True, default=None)
     rabochiy_emale = models.CharField(max_length=255, null=True, default=None)
-    emale = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"{self.emale} ({self.role.id})"
+        return f"{self.username} ({self.role.id})"
 
 class Turoperator(models.Model):
     dannie_autorizatsii = models.ForeignKey(DannieAutorizatsii, on_delete=models.CASCADE)
@@ -93,7 +93,7 @@ class Turoperator(models.Model):
     nazvanie_companii = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"Туроператор {self.dannie_autorizatsii.emale} ({self.nazvanie_companii})"
+        return f"Туроператор {self.dannie_autorizatsii.username} ({self.nazvanie_companii})"
 
 class Polzovatel(models.Model):
     dannie_autorizatsii = models.ForeignKey(DannieAutorizatsii, on_delete=models.CASCADE)
@@ -103,7 +103,7 @@ class Polzovatel(models.Model):
 
     def __str__(self):
         fio = f" ({self.pasport.fio})" if self.pasport else ""
-        return f"Пользователь {self.dannie_autorizatsii.emale}{fio}"
+        return f"Пользователь {self.dannie_autorizatsii.username}{fio}"
 
 class Putevka(models.Model):
     turoperator = models.ForeignKey(Turoperator, on_delete=models.CASCADE)
@@ -138,11 +138,13 @@ class Putevka(models.Model):
         return f"Заселение: {data_s} {vremya_s} Выселение: {data_do} {vremya_do}"
 
 STATUSY_ZAKAZA = [
-    "В обработке",
+    "В обработке менеджером",
     "Ожидает документы",
+    "Ожидает подтверждения туроператора",
     "Ожидает оплаты",
     "Подтверждён",
     "Услуга оказана",
+    "Отменён"
 ]
 
 class Zakaz(models.Model):
@@ -176,5 +178,5 @@ class ZakazPolzovatel(models.Model):
         if self.polzovatel.pasport:
             imya_polzovatelya = self.polzovatel.pasport.fio
         else:
-            imya_polzovatelya = self.polzovatel.dannie_autorizatsii.emale
+            imya_polzovatelya = self.polzovatel.dannie_autorizatsii.username
         return f"{self.zakaz} пользователя {imya_polzovatelya}"

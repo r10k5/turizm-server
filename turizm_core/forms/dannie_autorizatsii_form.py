@@ -28,12 +28,14 @@ class DannieAutorizatsiiForm(ModelForm):
             "rabochiy_nomer_telephona",
             "rabochiy_emale",
             "password",
-            "emale",
+            "email",
+            "username",
         ]
         labels = {
             "role": "Роль",
             "nomer_telephona": "Номер телефона",
-            "emale": "Электронная почта",
+            "email": "Электронная почта",
+            "username": "Имя пользователя",
         }
         error_messages = {
             "role": {
@@ -43,8 +45,12 @@ class DannieAutorizatsiiForm(ModelForm):
                 "required": "Это поле обязательное",
                 "unique": "Такой номер телефона уже существует"
             },
-            "emale": {
+            "email": {
                 "required": "Это поле обязательное",
                 "unique": "Такая электронная почта уже существует"
+            },
+            "username": {
+                "required": "Это поле обязательное",
+                "unique": "Такой имя пользователя уже существует"
             },
         }
