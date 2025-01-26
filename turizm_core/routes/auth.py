@@ -1,7 +1,12 @@
 from django.contrib.auth.hashers import check_password, make_password
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from turizm_core.forms.auth_form import CustomAuthForm
+
+def logout_view(request):
+    logout(request)
+    return redirect('/')
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -10,5 +15,7 @@ def login_view(request):
             login(request, form.get_user())
             return redirect('/')
     else:
+        if request.user.is_authenticated:
+            return redirect('/')
         form = CustomAuthForm()
     return render(request, 'login.html', {'form': form}) 
