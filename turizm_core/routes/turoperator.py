@@ -54,7 +54,7 @@ class TuroperatorView(View):
 @method_decorator(is_tour_operator, name='dispatch')
 class TuroperatorOrdersView(LoginRequiredMixin, ListView):
     model = Zakaz
-    template_name = "turoperator/orders_view.html"
+    template_name = "zakaz/orders_view.html"
     context_object_name = "zakazy"
 
     def get_queryset(self):

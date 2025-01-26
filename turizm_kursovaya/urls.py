@@ -83,6 +83,7 @@ urlpatterns = [
     path("zakazi_polzovateley", zakaz_polzovatel.ZakazPolzovatelView.as_view()),
     path("zakaz_polzovatel/delete/<int:pk>", zakaz_polzovatel.ZakazPolzovatelDeleteView.as_view()),
     path("zakazi_polzovateley/<int:pk>", zakaz_polzovatel.ZakazPolzovatelUpdateView.as_view()),
+    path("manager/orders", zakaz.ManagerOrdersView.as_view()),
 
     path('login', login_view, name='login'),
     path('logout', logout_view, name='logout'),
