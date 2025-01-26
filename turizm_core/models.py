@@ -38,9 +38,6 @@ class Zagranpasport(models.Model):
         return self.data_okonchania.strftime('%d.%m.%Y')
 
 class Pasport(models.Model):
-    familia = models.CharField(max_length=100)
-    imya = models.CharField(max_length=100)
-    otchestvo = models.CharField(max_length=100)
     data_rojdenia = models.DateField()
     seria = models.IntegerField()
     nomer = models.IntegerField()
@@ -49,11 +46,7 @@ class Pasport(models.Model):
     scan_pasporta = models.ImageField(upload_to="pasports")
 
     def __str__(self):
-        return f"{self.fio} {self.seria_nomer}"
-
-    @property
-    def fio(self):
-        return f"{self.imya} {self.familia} {self.otchestvo}"
+        return f"Паспорт {self.seria_nomer}"
     
     @property
     def data_rojdenia_formated(self):
@@ -98,14 +91,21 @@ class Turoperator(models.Model):
         return f"Туроператор {self.dannie_autorizatsii.username} ({self.nazvanie_companii})"
 
 class Polzovatel(models.Model):
-    dannie_autorizatsii = models.ForeignKey(DannieAutorizatsii, on_delete=models.CASCADE)
+    familia = models.CharField(max_length=100)
+    imya = models.CharField(max_length=100)
+    otchestvo = models.CharField(max_length=100)
+    dannie_autorizatsii = models.ForeignKey(DannieAutorizatsii, on_delete=models.SET_NULL, null=True, default=None)
     pasport = models.ForeignKey(Pasport, null=True, on_delete=models.SET_NULL, default=None)
     zagranpasport = models.ForeignKey(Zagranpasport, null=True, on_delete=models.SET_NULL, default=None)
     data_registatsii = models.DateField(auto_now_add=True)
 
+
+    @property
+    def fio(self):
+        return f"{self.imya} {self.familia} {self.otchestvo}"
+
     def __str__(self):
-        fio = f" ({self.pasport.fio})" if self.pasport else ""
-        return f"Пользователь {self.dannie_autorizatsii.username}{fio}"
+        return f"Пользователь {self.dannie_autorizatsii.username}({self.fio})"
 
 class Putevka(models.Model):
     turoperator = models.ForeignKey(Turoperator, on_delete=models.CASCADE)
@@ -178,8 +178,4 @@ class ZakazPolzovatel(models.Model):
     nomer_bileta_obratno = models.CharField(max_length=100)
 
     def __str__(self):
-        if self.polzovatel.pasport:
-            imya_polzovatelya = self.polzovatel.pasport.fio
-        else:
-            imya_polzovatelya = self.polzovatel.dannie_autorizatsii.username
-        return f"{self.zakaz} пользователя {imya_polzovatelya}"
+        return f"{self.zakaz} пользователя {self.polzovatel.fio}"

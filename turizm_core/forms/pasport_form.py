@@ -27,9 +27,6 @@ class PasportForm(ModelForm):
     class Meta:
         model = Pasport
         fields = [
-            "familia",
-            "imya",
-            "otchestvo",
             "data_rojdenia",
             "seria",
             "nomer",
@@ -38,24 +35,12 @@ class PasportForm(ModelForm):
             "scan_pasporta",
         ]
         labels = {
-            "familia": "Фамилия",
-            "imya": "Имя",
-            "otchestvo": "Отчество",
             "seria": "Серия",
             "nomer": "Номер",
             "organ_vidachi": "Орган выдачи",
             "scan_pasporta": "Скан",
         }
         error_messages = {
-            "familia": {
-                "required": "Это поле обязательное"
-            },
-            "imya": {
-                "required": "Это поле обязательное"
-            },
-            "otchestvo": {
-                "required": "Это поле обязательное"
-            },
             "seria": {
                 "required": "Это поле обязательное"
             },
