@@ -20,7 +20,7 @@ from django.urls import path
 from turizm_core import views
 from turizm_core.routes import address, dannie_autorizatsii, otel, pasport, putevka, role, turoperator, zagranpasport, polzovatel, zakaz, zakaz_polzovatel
 from turizm_core.routes.auth import login_view, logout_view
-from turizm_core.routes.turoperator import TuroperatorCancelOrderView, TuroperatorConfirmOrderView, TuroperatorOrdersView, TuroperatorReportView
+from turizm_core.routes.turoperator import TuroperatorCancelOrderView, TuroperatorConfirmOrderView, TuroperatorReportView
 
 urlpatterns = [
     path("", views.index),
@@ -64,9 +64,8 @@ urlpatterns = [
     path("turoperator/delete/<int:pk>", turoperator.TuroperatorDeleteView.as_view()),
     path("turoperatori/<int:pk>", turoperator.TuroperatorUpdateView.as_view()),
 
-    path("turoperator/orders", TuroperatorOrdersView.as_view()),
-    path("turoperator/orders/confirm/<int:zakaz_id>", TuroperatorConfirmOrderView.as_view()),
-    path("turoperator/orders/cancel/<int:zakaz_id>", TuroperatorCancelOrderView.as_view()),
+    path("zakazi/confirm/<int:zakaz_id>", TuroperatorConfirmOrderView.as_view()),
+    path("zakazi/cancel/<int:zakaz_id>", TuroperatorCancelOrderView.as_view()),
     path("turoperator/report", TuroperatorReportView.as_view()),
 
     path("putevka/report", putevka.PutevkaReportView.as_view()),
@@ -76,7 +75,7 @@ urlpatterns = [
     path("putevki/<int:pk>", putevka.PutevkaUpdateView.as_view()),
 
     path("zakaz", zakaz.ZakazCreateView.as_view()),
-    path("zakazi", zakaz.ZakazView.as_view()),
+    path("zakazi", zakaz.OrdersView.as_view()),
     path("zakaz/delete/<int:pk>", zakaz.ZakazDeleteView.as_view()),
     path("zakazi/<int:pk>", zakaz.ZakazUpdateView.as_view()),
     
@@ -84,7 +83,6 @@ urlpatterns = [
     path("zakazi_polzovateley", zakaz_polzovatel.ZakazPolzovatelView.as_view()),
     path("zakaz_polzovatel/delete/<int:pk>", zakaz_polzovatel.ZakazPolzovatelDeleteView.as_view()),
     path("zakazi_polzovateley/<int:pk>", zakaz_polzovatel.ZakazPolzovatelUpdateView.as_view()),
-    path("manage/orders", zakaz.ManagerOrdersView.as_view()),
 
     path('login', login_view, name='login'),
     path('logout', logout_view, name='logout'),
