@@ -176,6 +176,27 @@
         .manager-info p {
             margin: 0;
         }
+        .add-order-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border: 2px dashed #4CAF50;
+            color: #4CAF50;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .add-order-card:hover {
+            background-color: #e8f5e9;
+            border-color: #45a049;
+            color: #45a049;
+            transform: scale(1.05);
+        }
+        .add-order-card .plus-icon {
+            font-size: 48px;
+            font-weight: bold;
+            line-height: 1;
+        }
     </style>
 {% endblock %}
 
@@ -213,6 +234,11 @@
         {% endif %}
     </form>
     <div class="order-cards">
+        {% if user.role.id != "tour_operator" %}
+            <a class="order-card add-order-card" href="/zakaz">
+                <div class="plus-icon">+</div>
+            </a>
+        {% endif %}
         {% for zakaz in zakazy %}
         <div class="order-card" {% if user.role.id != 'tour_operator' %}onclick="window.location.href='/zakazi/{{ zakaz.id }}'"{% endif %}>
             {% if zakaz.status != 6 and zakaz.status != 4 %}
@@ -257,8 +283,6 @@
                 </div>
             </div>
         </div>
-        {% empty %}
-        <p>Нет заказов.</p>
         {% endfor %}
     </div>
 {% endblock %}
