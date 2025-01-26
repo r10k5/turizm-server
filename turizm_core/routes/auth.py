@@ -1,4 +1,3 @@
-from django.contrib.auth.hashers import check_password, make_password
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from turizm_core.forms.auth_form import CustomAuthForm

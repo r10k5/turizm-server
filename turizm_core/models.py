@@ -154,6 +154,7 @@ class Zakaz(models.Model):
     data_sozdania = models.DateField(auto_now_add=True)
     status = models.IntegerField()
     dop_info = models.TextField(default="")
+    manager = models.ForeignKey(Polzovatel, on_delete=models.SET_NULL, null=True, default=None)
 
     def __str__(self):
         return f"Заказ №{self.id} от {self.data_sozdania_formated}"
