@@ -4,8 +4,8 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView, DeleteView, UpdateView
 from django.views.generic import ListView
-from django.db.models import Count
-    
+from django.db.models import Q, Count
+
 from turizm_core.forms.zakaz_form import ZakazForm
 from turizm_core.models import Zakaz
 from turizm_core.helpers import is_manager
@@ -55,9 +55,14 @@ class ManagerOrdersView(LoginRequiredMixin, ListView):
         if filter == 'canceled':
             vse_zakazi = vse_zakazi.filter(status=6)
 
+        q = self.request.GET.get('q', '')
+        if q:
+            vse_zakazi = vse_zakazi.filter(Q(dop_info__icontains=q))
+
         return vse_zakazi
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['filter'] = self.request.GET.get('filter', 'all')
+        context['q'] = self.request.GET.get('q', '')
         return context

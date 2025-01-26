@@ -6,6 +6,29 @@
 
 {% block head %}
     <style>
+        .search-container {
+            margin: 20px auto;
+            max-width: 500px;
+            display: flex;
+            gap: 10px;
+        }
+        .search-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .search-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .search-btn:hover {
+            background-color: #45a049;
+        }
         .order-cards {
             display: flex;
             flex-wrap: wrap;
@@ -132,6 +155,7 @@
             margin-bottom: 20px;
         }
         .filter-btn {
+            font-size: 16px;
             color: #000;
             margin: 0 10px;
             padding: 10px 20px;
@@ -154,12 +178,37 @@
 
 {% block content %}
     <h1>Список заказов</h1>
-    <div class="filter-btns">
-        <a class="filter-btn {% if filter == 'all' %}active{% endif %}" href="?filter=all">Все</a>
-        <a class="filter-btn {% if filter == 'pending' %}active{% endif %}" href="?filter=pending">Ожидают подтверждения</a>
-        <a class="filter-btn {% if filter == 'confirmed' %}active{% endif %}" href="?filter=confirmed">Подтверждённые</a>
-        <a class="filter-btn {% if filter == 'canceled' %}active{% endif %}" href="?filter=canceled">Отменённые</a>
-    </div>
+    <form class="form-search" method="GET" action="">
+        <div class="filter-btns">
+            <input type="radio" name="filter" id="filter-all" value="all" {% if filter == 'all' %}checked{% endif %} hidden />
+            <input type="radio" name="filter" id="filter-pending" value="pending" {% if filter == 'pending' %}checked{% endif %} hidden />
+            <input type="radio" name="filter" id="filter-confirmed" value="confirmed" {% if filter == 'confirmed' %}checked{% endif %} hidden />
+            <input type="radio" name="filter" id="filter-canceled" value="canceled" {% if filter == 'canceled' %}checked{% endif %} hidden />
+            <label for="filter-all">
+                <button class="filter-btn {% if filter == 'all' %}active{% endif %}" name="filter" value="all">Все</button>
+            </label>
+            <label for="filter-pending">
+                <button class="filter-btn {% if filter == 'pending' %}active{% endif %}" name="filter" value="pending">Ожидают подтверждения</button>
+            </label>
+            <label for="filter-confirmed">
+                <button class="filter-btn {% if filter == 'confirmed' %}active{% endif %}" name="filter" value="confirmed">Подтверждённые</button>
+            </label>
+            <label for="filter-canceled">
+                <button class="filter-btn {% if filter == 'canceled' %}active{% endif %}" name="filter" value="canceled">Отменённые</button>
+            </label>
+        </div>
+        
+        {% if user.role.id != "tour_operator" %}
+            <div class="search-container">
+                <input type="text" class="search-input" name="q" placeholder="Поиск заказа" value="{{ q }}">
+                <button class="search-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/>
+                    </svg>
+                </button>
+            </div>
+        {% endif %}
+    </form>
     <div class="order-cards">
         {% for zakaz in zakazy %}
         <div class="order-card" data-status="{{ zakaz.status_formated }}">
