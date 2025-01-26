@@ -1,68 +1,130 @@
 {% extends "base.html" %}
 
-{% block content %}
-    <h1>Список заказов пользователей</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Идентификатор</th>
-                <th>Пользователь</th>
-                <th>Заказ</th>
-                <th>Скан договора</th>
-                <th>Номер билета туда</th>
-                <th>Номер билета обратно</th>
-                <th colspan="2">Действия</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for zakaz_polzovatel in zakazi_polzovateley %}
-                <tr>
-                    <td>{{ zakaz_polzovatel.id }}</td>
-                    <td>{{ zakaz_polzovatel.polzovatel }}</td>
-                    <td>{{ zakaz_polzovatel.zakaz }}</td>
-                    <td>
-                        <a href="{{ zakaz_polzovatel.scan_dogovora.url }}" target="_blank">
-                            <img src="{{ zakaz_polzovatel.scan_dogovora.url }}" style="max-width: 150px;" />
-                        </a>
-                    </td>
-                    <td>{{ zakaz_polzovatel.nomer_bileta_tuda }}</td>
-                    <td>{{ zakaz_polzovatel.nomer_bileta_obratno }}</td>
-                    <td>
-                        <a href="/zakazi_polzovateley/{{ zakaz_polzovatel.id }}">Редактировать</a>
-                    </td>
-                    <td>
-                        <form
-                            method="POST"
-                            action="/zakaz_polzovatel/delete/{{ zakaz_polzovatel.id }}"
-                            onsubmit="return confirm('Вы действительно хотите удалить заказ пользователя: {{ zakaz_polzovatel }}?')"
-                        >
-                            {% csrf_token %}
-
-                            <button type="submit">Удалить</button>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <br />
-    <a href="/zakaz_polzovatel">Добавить новый заказ пользователя</a>
-
+{% block head %}
     <style>
-        th {
-            text-align: left;
+        .zakaz-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
-
-        th, td {
-            padding: 8px;
+        .zakaz-card {
+            text-decoration: none;
+            color: #000;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 300px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            transition: box-shadow 0.2s;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            flex-direction: column;
         }
-
-        table, tr, td, th {
-            border: 1px solid black;
+        .zakaz-card:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border: 1px solid #4CAF50;
         }
-
-        table {
-            border-collapse: collapse;
+        .zakaz-card img {
+            width: calc(100% + 40px);
+            height: 200px;
+            object-fit: cover;
+            margin: -20px -20px 15px -20px;
+            border-radius: 5px 5px 0 0;
+        }
+        .zakaz-card .nomer {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .zakaz-card .details {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.4;
+        }
+        .zakaz-card .cancel-form {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+        .zakaz-card .cancel-btn {
+            background-color: #f44336;
+            color: #fff;
+            border: none;
+            border-radius: 100%;
+            width: 24px;
+            height: 24px;
+            opacity: 0;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .zakaz-card:hover .cancel-btn {
+            opacity: 1;
+        }
+        .zakaz-card .cancel-btn:hover {
+            transform: scale(1.5);
+        }
+        .add-zakaz-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border: 2px dashed #4CAF50;
+            color: #4CAF50;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .add-zakaz-card:hover {
+            background-color: #e8f5e9;
+            border-color: #45a049;
+            color: #45a049;
+            transform: scale(1.05);
+        }
+        .add-zakaz-card .plus-icon {
+            font-size: 48px;
+            font-weight: bold;
+            line-height: 1;
         }
     </style>
+{% endblock %}
+
+{% block content %}
+    <h1>Список заказов пользователей</h1>
+    <div class="zakaz-cards">
+        <a class="zakaz-card add-zakaz-card" href="/zakaz_polzovatel">
+            <div class="plus-icon">+</div>
+        </a>
+        {% for zakaz_polzovatel in zakazi_polzovateley %}
+        <a class="zakaz-card" href="/zakazi_polzovateley/{{ zakaz_polzovatel.id }}">
+            <form class="cancel-form" 
+                  method="POST" 
+                  action="/zakaz_polzovatel/delete/{{ zakaz_polzovatel.id }}"
+                  onsubmit="return confirm('Вы действительно хотите удалить заказ пользователя: {{ zakaz_polzovatel }}?')">
+                {% csrf_token %}
+                <button class="cancel-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" fill="currentColor"/>
+                    </svg>
+                </button>
+            </form>
+            
+            <img src="{{ zakaz_polzovatel.scan_dogovora.url }}" alt="Скан договора">
+            
+            <div class="nomer">Заказ от {{ zakaz_polzovatel.polzovatel.fio }}</div>
+            
+            <div class="details">
+                <div>Билет туда: {{ zakaz_polzovatel.nomer_bileta_tuda }}</div>
+                <div>Билет обратно: {{ zakaz_polzovatel.nomer_bileta_obratno }}</div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
 {% endblock content %}
