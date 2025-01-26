@@ -160,7 +160,6 @@
             {% endblock form_icon %}
             {% for field in form %}
                 <div class="form-group">
-                    {{ field.field.widget.input_type }}
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                     {% for error in field.errors %}
                         <div class="error-message">{{ error }}</div>
