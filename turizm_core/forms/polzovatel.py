@@ -29,3 +29,31 @@ class PolzovatelForm(ModelForm):
                 "required": "Это поле обязательное"
             }
         }
+
+
+class PolzovatelManagerForm(ModelForm):
+    class Meta:
+        model = Polzovatel
+        fields = [
+            "familia",
+            "imya", 
+            "otchestvo",
+        ]
+
+        labels = {
+            "familia": "Фамилия",
+            "imya": "Имя",
+            "otchestvo": "Отчество",
+        }
+
+        error_messages = {
+            "familia": {
+                "required": "Это поле обязательное"
+            },
+            "imya": {
+                "required": "Это поле обязательное"
+            },
+            "otchestvo": {
+                "required": "Это поле обязательное"
+            }
+        }

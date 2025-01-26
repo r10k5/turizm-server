@@ -105,7 +105,7 @@ class Polzovatel(models.Model):
         return f"{self.imya} {self.familia} {self.otchestvo}"
 
     def __str__(self):
-        return f"Пользователь {self.dannie_autorizatsii.username}({self.fio})"
+        return f"Пользователь {self.fio}"
 
 class Putevka(models.Model):
     turoperator = models.ForeignKey(Turoperator, on_delete=models.CASCADE)

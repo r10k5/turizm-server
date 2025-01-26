@@ -1,72 +1,170 @@
 {% extends "base.html" %}
 
-{% block content %}
-    <h1>Список адресов</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Идентификатор</th>
-                <th>Данные авторизации</th>
-                <th>Паспорт</th>
-                <th>Загранпаспорт</th>
-                <th colspan="2">Действия</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for polzovatel in polzovateli %}
-                <tr>
-                    <td>{{ polzovatel.id }}</td>
-                    <td>{{ polzovatel.dannie_autorizatsii }}</td>
-                    <td>
-                        {% if polzovatel.pasport %}
-                            {{ polzovatel.pasport }}
-                        {% else %}
-                            Отсутствует
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if polzovatel.zagranpasport %}
-                            {{ polzovatel.zagranpasport }}
-                        {% else %}
-                            Отсутствует
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a href="/polzovateli/{{ polzovatel.id }}">Редактировать</a>
-                    </td>
-                    <td>
-                        <form
-                            method="POST"
-                            action="/polzovatel/delete/{{ polzovatel.id }}"
-                            onsubmit="return confirm('Вы действительно хотите удалить пользователя: {{ polzovatel }}?')"
-                        >
-                            {% csrf_token %}
+{% block title %}
+    Список пользователей
+{% endblock %}
 
-                            <button type="submit">Удалить</button>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <br />
-    <a href="/polzovatel">Добавить нового пользователя</a>
-
+{% block head %}
     <style>
-        th {
-            text-align: left;
+        .polzovatel-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
-
-        th, td {
-            padding: 8px;
+        .polzovatel-card {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 300px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            transition: box-shadow 0.2s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
         }
-
-        table, tr, td, th {
-            border: 1px solid black;
+        .polzovatel-card:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border: 1px solid #4CAF50;
         }
-
-        table {
-            border-collapse: collapse;
+        .polzovatel-card .user-icon-container {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .polzovatel-card .user-icon {
+            width: 60px;
+            height: 60px;
+            opacity: 0.7;
+        }
+        .polzovatel-card .fio {
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .polzovatel-card .id {
+            color: #999;
+            font-size: 14px;
+            text-align: center;
+        }
+        .polzovatel-card .cancel-form {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+        .polzovatel-card .cancel-btn {
+            background-color: #f44336;
+            color: #fff;
+            border: none;
+            border-radius: 100%;
+            width: 24px;
+            height: 24px;
+            opacity: 0;
+            cursor: button;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .polzovatel-card:hover .cancel-btn {
+            opacity: 1;
+        }
+        .polzovatel-card .cancel-btn:hover {
+            transform: scale(1.5);
+        }
+        .add-polzovatel-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border: 2px dashed #4CAF50;
+            color: #4CAF50;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .add-polzovatel-card:hover {
+            background-color: #e8f5e9;
+            border-color: #45a049;
+            color: #45a049;
+            transform: scale(1.05);
+        }
+        .add-polzovatel-card .plus-icon {
+            font-size: 48px;
+            font-weight: bold;
+            line-height: 1;
+        }
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        .search-input {
+            width: 300px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .search-btn {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
         }
     </style>
+{% endblock %}
+
+{% block content %}
+    <h1>Список пользователей</h1>
+
+    <form class="form-search" method="GET" action="">
+        <div class="search-container">
+            <input type="text" class="search-input" name="q" placeholder="Поиск пользователя" value="{{ q }}">
+            <button class="search-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/>
+                </svg>
+            </button>
+        </div>
+    </form>
+    
+    <div class="polzovatel-cards">
+        <a class="polzovatel-card add-polzovatel-card" href="/polzovatel">
+            <div class="plus-icon">+</div>
+        </a>
+        {% for polzovatel in polzovateli %}
+        <a class="polzovatel-card" href="/polzovateli/{{ polzovatel.id }}">
+            <form class="cancel-form" action="/polzovatel/delete/{{ polzovatel.id }}" method="post" onsubmit="return confirm('Вы действительно хотите удалить пользователя: {{ polzovatel }}?')">
+                {% csrf_token %}
+                <button class="cancel-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" fill="currentColor"/>
+                    </svg>
+                </button>
+            </form>
+            
+            <div class="user-icon-container">
+                <svg class="user-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                </svg>
+            </div>
+            <div class="fio">{{ polzovatel.fio }}</div>
+            <div class="id">ID: {{ polzovatel.id }}</div>
+        </a>
+        {% empty %}
+        <p>Нет пользователей.</p>
+        {% endfor %}
+    </div>
 {% endblock content %}
