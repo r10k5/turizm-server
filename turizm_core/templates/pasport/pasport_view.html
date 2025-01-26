@@ -1,68 +1,135 @@
 {% extends "base.html" %}
 
-{% block content %}
-    <h1>Список паспортов</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Идентификатор</th>
-                <th>Скан паспорта</th>
-                <th>ФИО</th>
-                <th>Дата рождения</th>
-                <th>Серия и номер</th>
-                <th>Когда и кем выдан</th>
-                <th colspan="2">Действия</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for pasport in pasporta %}
-                <tr>
-                    <td>{{ pasport.id }}</td>
-                    <td>
-                        <a href="{{ pasport.scan_pasporta.url }}" target="_blank">
-                            <img src="{{ pasport.scan_pasporta.url }}" style="max-width: 150px;" />
-                        </a>
-                    </td>
-                    <td style="max-width: 300px;">{{ pasport.fio }}</td>
-                    <td>{{ pasport.data_rojdenia_formated }}</td>
-                    <td>{{ pasport.seria_nomer }}</td>
-                    <td>{{ pasport.kem_kogda_vydan }}</td>
-                    <td>
-                        <a href="/pasporta/{{ pasport.id }}">Редактировать</a>
-                    </td>
-                    <td>
-                        <form
-                            method="POST"
-                            action="/pasport/delete/{{ pasport.id }}"
-                            onsubmit="return confirm('Вы действительно хотите удалить паспорт: {{ pasport }}?')"
-                        >
-                            {% csrf_token %}
-
-                            <button type="submit">Удалить</button>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <br />
-    <a href="/pasport">Добавить новый паспорт</a>
-
+{% block head %}
     <style>
-        th {
-            text-align: left;
+        .pasport-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
-
-        th, td {
-            padding: 8px;
+        .pasport-card {
+            text-decoration: none;
+            color: #000;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 300px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            transition: box-shadow 0.2s;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            flex-direction: column;
         }
-
-        table, tr, td, th {
-            border: 1px solid black;
+        .pasport-card:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border: 1px solid #4CAF50;
         }
-
-        table {
-            border-collapse: collapse;
+        .pasport-card img {
+            width: calc(100% + 40px);
+            height: 200px;
+            object-fit: cover;
+            margin: -20px -20px 15px -20px;
+            border-radius: 5px 5px 0 0;
+        }
+        .pasport-card .fio {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .pasport-card .details {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .pasport-card .cancel-form {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+        .pasport-card .cancel-btn {
+            background-color: #f44336;
+            color: #fff;
+            border: none;
+            border-radius: 100%;
+            width: 24px;
+            height: 24px;
+            opacity: 0;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .pasport-card:hover .cancel-btn {
+            opacity: 1;
+        }
+        .pasport-card .cancel-btn:hover {
+            transform: scale(1.5);
+        }
+        .add-pasport-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border: 2px dashed #4CAF50;
+            color: #4CAF50;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .add-pasport-card:hover {
+            background-color: #e8f5e9;
+            border-color: #45a049;
+            color: #45a049;
+            transform: scale(1.05);
+        }
+        .add-pasport-card .plus-icon {
+            font-size: 48px;
+            font-weight: bold;
+            line-height: 1;
         }
     </style>
+{% endblock %}
+
+{% block content %}
+    <h1>Список паспортов</h1>
+    <div class="pasport-cards">
+        <a class="pasport-card add-pasport-card" href="/pasport">
+            <div class="plus-icon">+</div>
+        </a>
+        {% for pasport in pasporta %}
+        <a class="pasport-card" href="/pasporta/{{ pasport.id }}">
+            <form class="cancel-form" 
+                  action="/pasport/delete/{{ pasport.id }}" 
+                  method="POST"
+                  onsubmit="return confirm('Вы действительно хотите удалить паспорт: {{ pasport }}?')">
+                {% csrf_token %}
+                <button class="cancel-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" fill="currentColor"/>
+                    </svg>
+                </button>
+            </form>
+            
+            <img src="{{ pasport.scan_pasporta.url }}" alt="Скан паспорта">
+            
+            <div class="fio">{{ pasport.seria_nomer }}</div>
+            
+            <div class="details">
+                <div>Дата рождения: {{ pasport.data_rojdenia_formated }}</div>
+                <div>Выдан: {{ pasport.kem_kogda_vydan }}</div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
 {% endblock content %}

@@ -23,7 +23,7 @@ class PasportDeleteView(DeleteView):
 class PasportView(View):
     def get(self, request, *args, **kwargs):
         pasporta = Pasport.objects.all()
-
+        
         return render(
             request,
             "pasport/pasport_view.html",

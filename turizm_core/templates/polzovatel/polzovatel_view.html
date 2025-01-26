@@ -139,7 +139,7 @@
             </button>
         </div>
     </form>
-    
+
     <div class="polzovatel-cards">
         <a class="polzovatel-card add-polzovatel-card" href="/polzovatel">
             <div class="plus-icon">+</div>
@@ -163,8 +163,6 @@
             <div class="fio">{{ polzovatel.fio }}</div>
             <div class="id">ID: {{ polzovatel.id }}</div>
         </a>
-        {% empty %}
-        <p>Нет пользователей.</p>
         {% endfor %}
     </div>
 {% endblock content %}
