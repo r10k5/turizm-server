@@ -1,15 +1,201 @@
 {% extends "base.html" %}
 
+{% block title %}
+    Создание пользователя
+{% endblock %}
+
+{% block head %}
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .form-group label {
+            font-weight: bold;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            outline: none;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: transparent;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+        .form-group textarea {
+            min-height: 2.5rem;
+            resize: vertical;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+        .file-input-wrapper {
+            position: relative;
+            cursor: pointer;
+            width: 100%;
+            border: 2px dashed #4CAF50;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background-color: #f8f8f8;
+        }
+        .file-input-wrapper:hover {
+            background-color: #e8f5e9;
+            border-color: #45a049;
+        }
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .file-input-wrapper .file-label {
+            color: #4CAF50;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .file-input-wrapper .file-label svg {
+            width: 40px;
+            height: 40px;
+            fill: #4CAF50;
+        }
+        .file-input-wrapper img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+        .error-message {
+            background-color: #ffe6e6;
+            border: 1px solid #ffcccc;
+            border-radius: 5px;
+            padding: 10px;
+            color: #8a0a0a;
+            font-size: 14px;
+            margin: 5px 0;
+            width: 100%;
+        }
+        form svg {
+            width: 100px;
+            height: 100px;
+            opacity: 0.5;
+        }
+    </style>
+    <script>
+        function previewImage(event) {
+            const input = event.target;
+            const wrapper = input.closest('.file-input-wrapper');
+            const label = wrapper.querySelector('.file-label');
+            const preview = wrapper.querySelector('.preview-image');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    if (!preview) {
+                        const img = document.createElement('img');
+                        img.classList.add('preview-image');
+                        wrapper.appendChild(img);
+                    }
+                    wrapper.querySelector('.preview-image').src = e.target.result;
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+                label.style.display = 'none';
+            }
+        }
+    </script>
+{% endblock %}
+
 {% block content %}
     <h1>
         {% block header %}
         {% endblock header %}
     </h1>
-    <form method="POST" enctype="{% block form_enctype %}application/x-www-form-urlencoded{% endblock form_enctype %}">
-        {% csrf_token %}
+    <div class="form-container">
+        <form method="post" enctype="{% block form_enctype %}application/x-www-form-urlencoded{% endblock form_enctype %}">
+            {% csrf_token %}
 
-        {{ form.as_p }}
-
-        <button type="submit">Сохранить</button>
-    </form>
-{% endblock content %}
+            {% block form_icon %}
+            {% endblock form_icon %}
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.field.widget.input_type }}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {% for error in field.errors %}
+                        <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                    {% if field.field.widget.input_type == 'file' %}
+                        <label for="{{ field.id_for_label }}" class="file-input-wrapper">
+                            {% if not field.value %}
+                                <div class="file-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                                    </svg>
+                                    <span>Нажмите для загрузки файла</span>
+                                </div>
+                            {% endif %}
+                            <input 
+                                type="file" 
+                                id="{{ field.id_for_label }}" 
+                                name="{{ field.name }}" 
+                                accept="image/*" 
+                                style="display: none;"
+                                hidden
+                            >
+                            {% if field.value and field.value.url|lower|slice:'-4:' in '.jpg,.png,.gif' %}
+                                <img src="{{ field.value.url }}" alt="Current image" class="preview-image">
+                            {% endif %}
+                        </label>
+                        <script>
+                            document.getElementById('{{ field.id_for_label }}').addEventListener('change', previewImage);
+                        </script>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="submit-btn">Сохранить</button>
+        </form>
+    </div>
+{% endblock %}
