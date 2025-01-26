@@ -141,7 +141,9 @@
                 }
                 
                 reader.readAsDataURL(input.files[0]);
-                label.style.display = 'none';
+                if (label) {
+                    label.style.display = 'none';
+                }
             }
         }
     </script>
@@ -178,17 +180,15 @@
                                 type="file" 
                                 id="{{ field.id_for_label }}" 
                                 name="{{ field.name }}" 
-                                accept="image/*" 
+                                accept="image/jpeg, image/png, image/jpg, image/gif" 
                                 style="display: none;"
                                 hidden
+                                onchange="previewImage(event)"
                             >
                             {% if field.value and field.value.url|lower|slice:'-4:' in '.jpg,.png,.gif' %}
                                 <img src="{{ field.value.url }}" alt="Current image" class="preview-image">
                             {% endif %}
                         </label>
-                        <script>
-                            document.getElementById('{{ field.id_for_label }}').addEventListener('change', previewImage);
-                        </script>
                     {% else %}
                         {{ field }}
                     {% endif %}
