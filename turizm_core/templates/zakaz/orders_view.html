@@ -93,14 +93,9 @@
             font-size: 14px;
         }
         .order-card .order-info {
-            margin-top: auto;
             overflow: hidden;
             text-overflow: ellipsis;
-            display: -webkit-box;
-            line-clamp: 3;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            height: calc(1rem * 3);
+            white-space: nowrap;
         }
         .order-card .order-users-count {
             font-size: 14px;
@@ -173,6 +168,14 @@
             background-color: #4CAF50;
             color: #fff;
         }
+        .manager-info {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .manager-info p {
+            margin: 0;
+        }
     </style>
 {% endblock %}
 
@@ -211,9 +214,13 @@
     </form>
     <div class="order-cards">
         {% for zakaz in zakazy %}
-        <div class="order-card" data-status="{{ zakaz.status_formated }}">
+        <div class="order-card" {% if user.role.id != 'tour_operator' %}onclick="window.location.href='/zakazi/{{ zakaz.id }}'"{% endif %}>
             {% if zakaz.status != 6 and zakaz.status != 4 %}
-                <form class="cancel-form" action="orders/cancel/{{ zakaz.id }}" method="post">
+                {% if user.role.id == 'tour_operator' %}
+                    <form class="cancel-form" action="orders/cancel/{{ zakaz.id }}" method="post">
+                {% else %}
+                    <form class="cancel-form" action="/zakaz/delete/{{ zakaz.id }}" method="post" onclick="return confirm('Вы действительно хотите удалить адрес: {{ zakaz }}?')">
+                {% endif %}
                     {% csrf_token %}
                     <button class="cancel-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -228,12 +235,20 @@
             </div>
             <div class="order-card-content">
                 <p class="order-status {% if zakaz.status == 4 %}confirmed{% elif zakaz.status == 6 %}canceled{% else %}pending{% endif %}">{{ zakaz.status_formated }}</p>
-
+                
                 <div class="order-info-container">
                     <p class="order-info">{{ zakaz.dop_info }}</p>
+                    {% if user.role.id == "admin" %}
+                        <div class="manager-info">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                            </svg>
+                            <p class="order-manager">{{ zakaz.manager.dannie_autorizatsii.username }}</p>
+                        </div>
+                    {% endif %}
                     <p class="order-users-count">Количество пользователей: {{ zakaz.polzovateley_count }}</p>
                     
-                    {% if zakaz.status != 6 and zakaz.status != 4 %}
+                    {% if zakaz.status != 6 and zakaz.status != 4 and user.role.id == 'tour_operator' %}
                         <form class="confirmation-form" action="orders/confirm/{{ zakaz.id }}" method="post">
                             {% csrf_token %}
                             <button class="confirm-btn" type="submit">Подтвердить</button>

@@ -8,8 +8,7 @@ from django.db.models import Q, Count
 
 from turizm_core.forms.zakaz_form import ZakazForm
 from turizm_core.models import Zakaz
-from turizm_core.helpers import is_manager
-
+from turizm_core.helpers import has_role
 class ZakazCreateView(CreateView):
     form_class = ZakazForm
     template_name = "zakaz/create_view.html"
@@ -37,16 +36,24 @@ class ZakazView(View):
             }
         )
     
-@method_decorator(is_manager, name='dispatch')
+@method_decorator(has_role(['manager', 'admin']), name='dispatch')
 class ManagerOrdersView(LoginRequiredMixin, ListView):
     model = Zakaz
     template_name = "zakaz/orders_view.html"
     context_object_name = "zakazy"
 
     def get_queryset(self):
-        manager = self.request.user.polzovatel_set.first()
+        if self.request.user.role.id == 'manager':
+            manager = self.request.user.polzovatel_set.first()
+        
         filter = self.request.GET.get('filter', 'all')
-        vse_zakazi = Zakaz.objects.filter(manager=manager, status__in=[2, 4, 6]).annotate(polzovateley_count=Count('zakazpolzovatel'))
+        
+        if self.request.user.role.id == 'manager':
+            vse_zakazi = Zakaz.objects.filter(manager=manager)
+        elif self.request.user.role.id == 'admin':
+            vse_zakazi = Zakaz.objects.all()
+
+        vse_zakazi = vse_zakazi.annotate(polzovateley_count=Count('zakazpolzovatel'))
 
         if filter == 'pending':
             vse_zakazi = vse_zakazi.filter(status=2)
