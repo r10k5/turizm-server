@@ -1,6 +1,8 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views import View
-from django.views.generic import CreateView, DeleteView, UpdateView
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.db.models import Q
 from turizm_core.forms.address_form import AddressForm
 from turizm_core.models import Address
 
@@ -19,14 +21,22 @@ class AddressDeleteView(DeleteView):
     model = Address
     success_url = "/addressa"
 
-class AddressView(View):
-    def get(self, request, *args, **kwargs):
-        addressa = Address.objects.all()
+class AddressView(LoginRequiredMixin, ListView):
+    model = Address
+    template_name = "address/address_view.html"
+    context_object_name = "addressa"
 
-        return render(
-            request,
-            "address/address_view.html",
-            {
-                "addressa": addressa,
-            }
-        )
+    def get_queryset(self):
+        addressa = Address.objects.all()
+        
+        q = self.request.GET.get('q', '')
+
+        if q:
+            addressa = addressa.filter(Q(strana__icontains=q)|Q(gorod__icontains=q))
+
+        return addressa
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['q'] = self.request.GET.get('q', '')
+        return context
