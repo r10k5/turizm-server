@@ -245,12 +245,12 @@
             </a>
         {% endif %}
         {% for zakaz in zakazy %}
-        <div class="order-card" {% if user.role.id != 'tour_operator' %}onclick="window.location.href='/zakazi/{{ zakaz.id }}'"{% endif %}>
+        <a class="order-card" {% if user.role.id != 'tour_operator' %}href="/zakazi/{{ zakaz.id }}"{% endif %}>
             {% if zakaz.status != 6 and zakaz.status != 4 %}
                 {% if user.role.id == 'tour_operator' %}
-                    <form class="cancel-form" action="orders/cancel/{{ zakaz.id }}" method="post">
+                    <form class="cancel-form" action="/zakazi/cancel/{{ zakaz.id }}" method="post"  onclick="return confirm('Вы действительно хотите отменить заказ: {{ zakaz }}?')">
                 {% else %}
-                    <form class="cancel-form" action="/zakaz/delete/{{ zakaz.id }}" method="post" onclick="return confirm('Вы действительно хотите удалить адрес: {{ zakaz }}?')">
+                    <form class="cancel-form" action="/zakaz/delete/{{ zakaz.id }}" method="post" onclick="return confirm('Вы действительно хотите удалить заказ: {{ zakaz }}?')">
                 {% endif %}
                     {% csrf_token %}
                     <button class="cancel-btn">
@@ -280,14 +280,14 @@
                     <p class="order-users-count">Количество пользователей: {{ zakaz.polzovateley_count }}</p>
                     
                     {% if zakaz.status != 6 and zakaz.status != 4 and user.role.id == 'tour_operator' %}
-                        <form class="confirmation-form" action="orders/confirm/{{ zakaz.id }}" method="post">
+                        <form class="confirmation-form" action="/zakazi/confirm/{{ zakaz.id }}" method="post">
                             {% csrf_token %}
                             <button class="confirm-btn" type="submit">Подтвердить</button>
                         </form>
                     {% endif %}
                 </div>
             </div>
-        </div>
+        </a>
         {% endfor %}
     </div>
 {% endblock %}
