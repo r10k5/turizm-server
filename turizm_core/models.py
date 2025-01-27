@@ -139,15 +139,15 @@ class Putevka(models.Model):
     def stoimost_formated(self):
         return f"{self.stoimost:,} ₽".replace(",", " ")
 
-STATUSY_ZAKAZA = [
-    "В обработке менеджером",
-    "Ожидает документы",
-    "Ожидает подтверждения туроператора",
-    "Ожидает оплаты",
-    "Подтверждён",
-    "Услуга оказана",
-    "Отменён"
-]
+STATUSY_ZAKAZA = {
+    0: "В обработке менеджером",
+    1: "Ожидает документы", 
+    2: "Ожидает подтверждения туроператора",
+    3: "Ожидает оплаты",
+    4: "Подтверждён",
+    5: "Услуга оказана",
+    6: "Отменён"
+}
 
 class Zakaz(models.Model):
     putevka = models.ForeignKey(Putevka, on_delete=models.CASCADE)
@@ -165,10 +165,10 @@ class Zakaz(models.Model):
     
     @property
     def status_formated(self):
-        if self.status > len(STATUSY_ZAKAZA) - 1:
+        if self.status in STATUSY_ZAKAZA:
+            return STATUSY_ZAKAZA[self.status]
+        else:
             return "Неизвестно"
-        
-        return STATUSY_ZAKAZA[self.status]
 
 class ZakazPolzovatel(models.Model):
     zakaz = models.ForeignKey(Zakaz, on_delete=models.CASCADE)

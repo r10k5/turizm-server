@@ -3,13 +3,9 @@ from django.forms import ModelForm
 
 from turizm_core.models import STATUSY_ZAKAZA, Zakaz
 
-STATUSY_ZAKAZA_VYBOR = [
-    (i, STATUSY_ZAKAZA[i]) for i in range(len(STATUSY_ZAKAZA))
-]
-
 class ZakazForm(ModelForm):
     status = forms.ChoiceField(
-        choices=STATUSY_ZAKAZA_VYBOR,
+        choices=STATUSY_ZAKAZA.items(),
         label="Статус",
         error_messages={
             "required": "Это поле обязательное"
