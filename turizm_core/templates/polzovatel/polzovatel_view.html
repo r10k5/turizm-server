@@ -50,6 +50,10 @@
             font-size: 18px;
             text-align: center;
             margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
         }
         .polzovatel-card .id {
             color: #999;
@@ -103,6 +107,30 @@
             font-weight: bold;
             line-height: 1;
         }
+        .filter-btns {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .filter-btn {
+            font-size: 16px;
+            color: #000;
+            margin: 0 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-decoration: none;
+        }
+        .filter-btn:hover {
+            background-color: #e0e0e0;
+        }
+        .filter-btn.active {
+            background-color: #4CAF50;
+            color: #fff;
+        }
         .search-container {
             display: flex;
             justify-content: center;
@@ -130,6 +158,23 @@
     <h1>Список пользователей</h1>
 
     <form class="form-search" method="GET" action="">
+        {% if request.user.role.id == "admin" %}
+            <div class="filter-btns">
+                <input type="radio" name="filter" id="filter-all" value="all" {% if filter == 'all' %}checked{% endif %} hidden />
+                <input type="radio" name="filter" id="filter-clients" value="clients" {% if filter == 'clients' %}checked{% endif %} hidden />
+                <input type="radio" name="filter" id="filter-managers" value="managers" {% if filter == 'managers' %}checked{% endif %} hidden />
+                <label for="filter-all">
+                    <button class="filter-btn {% if filter == 'all' %}active{% endif %}" name="filter" value="all">Все</button>
+                </label>
+                <label for="filter-clients">
+                    <button class="filter-btn {% if filter == 'clients' %}active{% endif %}" name="filter" value="clients">Клиенты</button>
+                </label>
+                <label for="filter-managers">
+                    <button class="filter-btn {% if filter == 'managers' %}active{% endif %}" name="filter" value="managers">Менеджеры</button>
+                </label>
+            </div>
+        {% endif %}
+        
         <div class="search-container">
             <input type="text" class="search-input" name="q" placeholder="Поиск пользователя" value="{{ q }}">
             <button class="search-btn">
