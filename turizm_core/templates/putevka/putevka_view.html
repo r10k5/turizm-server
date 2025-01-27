@@ -152,6 +152,30 @@
         .cancel-btn:hover {
             transform: scale(1.5);
         }
+        .filter-btns {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .filter-btn {
+            font-size: 16px;
+            color: #000;
+            margin: 0 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-decoration: none;
+        }
+        .filter-btn:hover {
+            background-color: #e0e0e0;
+        }
+        .filter-btn.active {
+            background-color: #4CAF50;
+            color: #fff;
+        }
     </style>
 {% endblock %}
 
@@ -160,6 +184,24 @@
     {% if user.role.id == 'tour_operator' %}
         <a class="putevka-report-link" href="/putevka/report">Сформировать отчёт</a>
     {% endif %}
+    
+    <form class="form-search" method="GET" action="">
+        <div class="filter-btns">
+            <input type="radio" name="filter" id="filter-all" value="all" {% if filter == 'all' %}checked{% endif %} hidden />
+            <input type="radio" name="filter" id="filter-actual" value="actual" {% if filter == 'actual' %}checked{% endif %} hidden />
+            <input type="radio" name="filter" id="filter-nonactual" value="nonactual" {% if filter == 'nonactual' %}checked{% endif %} hidden />
+            <label for="filter-all">
+                <button class="filter-btn {% if filter == 'all' %}active{% endif %}" name="filter" value="all">Все</button>
+            </label>
+            <label for="filter-actual">
+                <button class="filter-btn {% if filter == 'actual' %}active{% endif %}" name="filter" value="actual">Актуальные</button>
+            </label>
+            <label for="filter-nonactual">
+                <button class="filter-btn {% if filter == 'nonactual' %}active{% endif %}" name="filter" value="nonactual">Неактуальные</button>
+            </label>
+        </div>
+    </form>
+
     <div class="putevka-cards">
         <a class="putevka-card add-putevka-card" href="/putevka">
             <div class="plus-icon">+</div>

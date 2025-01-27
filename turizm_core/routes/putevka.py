@@ -1,9 +1,10 @@
+from datetime import datetime
 from io import BytesIO
 from django import forms
 from django.shortcuts import render
 from django.views import View
-from django.views.generic import CreateView, DeleteView, UpdateView
-
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
     
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseForbidden
@@ -12,7 +13,7 @@ from turizm_core.forms.putevka_form import PutevkaForm
 from turizm_core.models import Putevka
 
 
-class PutevkaCreateView(CreateView):
+class PutevkaCreateView(LoginRequiredMixin, CreateView):
     form_class = PutevkaForm
     template_name = "putevka/create_view.html"
     success_url = "/putevki"
@@ -24,7 +25,7 @@ class PutevkaCreateView(CreateView):
             form.fields['turoperator'].widget = forms.HiddenInput()
         return form
 
-class PutevkaUpdateView(UpdateView):
+class PutevkaUpdateView(LoginRequiredMixin, UpdateView):
     form_class = PutevkaForm
     model = Putevka
     template_name = "putevka/update_view.html"
@@ -37,24 +38,33 @@ class PutevkaUpdateView(UpdateView):
             form.fields['turoperator'].widget = forms.HiddenInput()
         return form
 
-class PutevkaDeleteView(DeleteView):
+class PutevkaDeleteView(LoginRequiredMixin, DeleteView):
     model = Putevka
     success_url = "/putevki"
 
-class PutevkaView(View):
-    def get(self, request, *args, **kwargs):
-        if request.user.role.id == 'tour_operator':
-            putevki = Putevka.objects.filter(turoperator=request.user.turoperator_set.first())
-        else:
-            putevki = Putevka.objects.all()
+class PutevkaView(LoginRequiredMixin, ListView):
+    model = Putevka
+    template_name = "putevka/putevka_view.html"
+    context_object_name = "putevki"
 
-        return render(
-            request,
-            "putevka/putevka_view.html",
-            {
-                "putevki": putevki
-            }
-        )
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        
+        if self.request.user.role.id == 'tour_operator':
+            queryset = queryset.filter(turoperator=self.request.user.turoperator_set.first())
+
+        filter = self.request.GET.get('filter', 'all')
+        if filter == 'actual':
+            queryset = queryset.filter(data_vremya_otpravlenia__gte=datetime.now().date())
+        elif filter == 'nonactual':
+            queryset = queryset.filter(data_vremya_otpravlenia__lt=datetime.now().date())
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filter'] = self.request.GET.get('filter', 'all')
+        return context
 
 class PutevkaReportView(View):
     def get(self, request, *args, **kwargs):
