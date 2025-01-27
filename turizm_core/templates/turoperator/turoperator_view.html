@@ -130,6 +130,26 @@
             <div class="turoperator-info">
                 <div>ИНН: {{ turoperator.inn }}</div>
                 <div>КПП: {{ turoperator.kpp }}</div>
+                <div>
+                    <span>Номер телефона:</span>
+                    <b>
+                        {% if turoperator.dannie_autorizatsii.rabochiy_nomer_telephona %}
+                            {{ turoperator.dannie_autorizatsii.rabochiy_nomer_telephona }}
+                        {% else %}
+                            Не указан
+                        {% endif %}
+                    </b>
+                </div>
+                <div>
+                    <span>Почта:</span>
+                    <b>
+                        {% if turoperator.dannie_autorizatsii.rabochiy_emale %}
+                            {{ turoperator.dannie_autorizatsii.rabochiy_emale }}
+                        {% else %}
+                            Не указана
+                        {% endif %}
+                    </b>
+                </div>
             </div>
         </a>
         {% endfor %}
