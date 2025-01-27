@@ -248,9 +248,9 @@
         <a class="order-card" {% if user.role.id != 'tour_operator' %}href="/zakazi/{{ zakaz.id }}"{% endif %}>
             {% if zakaz.status != 6 and zakaz.status != 4 %}
                 {% if user.role.id == 'tour_operator' %}
-                    <form class="cancel-form" action="/zakazi/cancel/{{ zakaz.id }}" method="post"  onclick="return confirm('Вы действительно хотите отменить заказ: {{ zakaz }}?')">
+                    <form class="cancel-form" action="/zakazi/cancel/{{ zakaz.id }}" method="post"  onsubmit="return confirm('Вы действительно хотите отменить заказ: {{ zakaz }}?')">
                 {% else %}
-                    <form class="cancel-form" action="/zakaz/delete/{{ zakaz.id }}" method="post" onclick="return confirm('Вы действительно хотите удалить заказ: {{ zakaz }}?')">
+                    <form class="cancel-form" action="/zakaz/delete/{{ zakaz.id }}" method="post" onsubmit="return confirm('Вы действительно хотите удалить заказ: {{ zakaz }}?')">
                 {% endif %}
                     {% csrf_token %}
                     <button class="cancel-btn">

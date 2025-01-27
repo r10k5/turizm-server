@@ -110,11 +110,13 @@
             <div class="plus-icon">+</div>
         </a>
         {% for turoperator in turoperatori %}
-        <div class="turoperator-card" onclick="window.location.href='/turoperatori/{{ turoperator.id }}'">
-            <form class="cancel-form" 
-                  method="POST" 
-                  action="/turoperator/delete/{{ turoperator.id }}"
-                  onsubmit="return confirm('Вы действительно хотите удалить туроператора: {{ turoperator }}?')">
+        <a class="turoperator-card" href="/turoperatori/{{ turoperator.id }}">
+            <form
+                class="cancel-form"
+                method="post"
+                action="/turoperator/delete/{{ turoperator.id }}"
+                onsubmit="return confirm('Вы действительно хотите удалить туроператора: {{ turoperator }}?')"
+            >
                 {% csrf_token %}
                 <button class="cancel-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -129,7 +131,7 @@
                 <div>ИНН: {{ turoperator.inn }}</div>
                 <div>КПП: {{ turoperator.kpp }}</div>
             </div>
-        </div>
+        </a>
         {% endfor %}
     </div>
 {% endblock content %}
