@@ -117,7 +117,7 @@
             line-height: 1;
         }
         .putevka-report-link {
-            margin-top: 20px;
+            margin: 20px 0;
             display: block;
             text-align: center;
             text-decoration: none;
@@ -181,7 +181,7 @@
 
 {% block content %}
     <h1>Список путёвок</h1>
-    {% if user.role.id == 'tour_operator' %}
+    {% if user.role.id == 'tour_operator' or user.role.id == 'admin' %}
         <a class="putevka-report-link" href="/putevka/report">Сформировать отчёт</a>
     {% endif %}
     

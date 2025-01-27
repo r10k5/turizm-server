@@ -68,44 +68,61 @@ class PutevkaView(LoginRequiredMixin, ListView):
 
 class PutevkaReportView(View):
     def get(self, request, *args, **kwargs):
-        if request.user.role.id != 'tour_operator':
+        if request.user.role.id not in ['tour_operator', 'admin']:
             return HttpResponseForbidden("Доступ запрещён")
 
-        putevki = Putevka.objects.filter(turoperator=request.user.turoperator_set.first())
+        if request.user.role.id == 'tour_operator':
+            putevki = Putevka.objects.filter(turoperator=request.user.turoperator_set.first())
+        else:
+            putevki = Putevka.objects.all()
 
         # Создание PDF
         buffer = BytesIO()
         pdf = FPDF()
         pdf.add_page()
         pdf.add_font('Roboto', '', 'Roboto.ttf', uni=True)
+        pdf.add_font('Roboto', 'B', 'Roboto.ttf', uni=True)
         pdf.set_font('Roboto', '', 9)
 
         pdf.cell(200, 10, txt="Отчёт по продажам путёвок", ln=True, align='C')
-        pdf.cell(200, 10, txt=f"Туроператор: {request.user.username}", ln=True, align='C')
+
+        if request.user.role.id == 'tour_operator':
+            pdf.cell(200, 10, txt=f"Туроператор: {request.user.username}", ln=True, align='C')
+        else:
+            pdf.cell(200, 10, txt=f"Все туроператоры", ln=True, align='C')
 
         pdf.ln(10)  # Пустая строка
 
-        # Заголовки таблицы
-        pdf.cell(30, 10, 'Идентификатор', 1)
-        pdf.cell(50, 10, 'Страна', 1)
-        pdf.cell(50, 10, 'Город', 1)
-        pdf.cell(30, 10, 'Продаж', 1)
-        pdf.cell(30, 10, 'Сумма', 1)
-        pdf.ln()
+        with pdf.table() as table:
+            row = table.row()
+            # Заголовки таблицы
+            row.cell('Идентификатор')
 
-        for putevka in putevki:
-            kolichestvo_lyudey = 0
-            for zakaz in putevka.zakaz_set.all():
-                kolichestvo_lyudey += zakaz.zakazpolzovatel_set.count()
+            if request.user.role.id == 'admin':
+                row.cell('Туроператор')
             
-            summa = kolichestvo_lyudey * putevka.stoimost
+            row.cell('Страна')
+            row.cell('Город')
+            row.cell('Продаж')
+            row.cell('Сумма')
 
-            pdf.cell(30, 10, str(putevka.id), 1)
-            pdf.cell(50, 10, putevka.otel.address.strana, 1)
-            pdf.cell(50, 10, putevka.otel.address.gorod, 1)
-            pdf.cell(30, 10, str(kolichestvo_lyudey), 1)
-            pdf.cell(30, 10, str(summa), 1)
-            pdf.ln()
+            for putevka in putevki:
+                row = table.row()
+                kolichestvo_lyudey = 0
+                for zakaz in putevka.zakaz_set.all():
+                    kolichestvo_lyudey += zakaz.zakazpolzovatel_set.count()
+                
+                summa = kolichestvo_lyudey * putevka.stoimost
+
+                row.cell(str(putevka.id))
+                
+                if request.user.role.id == 'admin':
+                    row.cell(putevka.turoperator.nazvanie_companii)
+                
+                row.cell(putevka.otel.address.strana)
+                row.cell(putevka.otel.address.gorod)
+                row.cell(str(kolichestvo_lyudey))
+                row.cell(str(summa))
 
         pdf.output(buffer)
         buffer.seek(0)
