@@ -11,7 +11,6 @@ class PolzovatelCreateView(LoginRequiredMixin, CreateView):
     success_url = "/polzovateli"
 
     def get_form_kwargs(self):
-        print(self.request)
         kwargs = super().get_form_kwargs()
         kwargs["request"] = self.request
         return kwargs
@@ -21,6 +20,11 @@ class PolzovatelUpdateView(LoginRequiredMixin, UpdateView):
     model = Polzovatel
     template_name = "polzovatel/update_view.html"
     success_url = "/polzovateli"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["request"] = self.request
+        return kwargs
 
 class PolzovatelDeleteView(LoginRequiredMixin, DeleteView):
     model = Polzovatel
