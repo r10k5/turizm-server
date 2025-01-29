@@ -56,12 +56,16 @@ class PolzovatelManagerForm(ModelForm):
             "familia",
             "imya", 
             "otchestvo",
+            "pasport",
+            "zagranpasport",
         ]
 
         labels = {
             "familia": "Фамилия",
             "imya": "Имя",
             "otchestvo": "Отчество",
+            "pasport": "Паспорт",
+            "zagranpasport": "Загранпаспорт",
         }
 
         error_messages = {
@@ -72,6 +76,12 @@ class PolzovatelManagerForm(ModelForm):
                 "required": "Это поле обязательное"
             },
             "otchestvo": {
+                "required": "Это поле обязательное"
+            },
+            "pasport": {
+                "required": "Это поле обязательное"
+            },
+            "zagranpasport": {
                 "required": "Это поле обязательное"
             }
         }
