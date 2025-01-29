@@ -94,7 +94,7 @@ class Polzovatel(models.Model):
     familia = models.CharField(max_length=100)
     imya = models.CharField(max_length=100)
     otchestvo = models.CharField(max_length=100)
-    dannie_autorizatsii = models.ForeignKey(DannieAutorizatsii, on_delete=models.SET_NULL, null=True, default=None)
+    dannie_autorizatsii = models.ForeignKey(DannieAutorizatsii, on_delete=models.CASCADE, null=True, default=None)
     pasport = models.ForeignKey(Pasport, null=True, on_delete=models.SET_NULL, default=None)
     zagranpasport = models.ForeignKey(Zagranpasport, null=True, on_delete=models.SET_NULL, default=None)
     data_registatsii = models.DateField(auto_now_add=True)
