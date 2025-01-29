@@ -20,6 +20,14 @@ class DannieAutorizatsiiForm(ModelForm):
         label="Рабочая электронная почта",
         required=False
     )
+
+    def save(self, commit=True):
+        user = super(DannieAutorizatsiiForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password"])
+        if commit:
+            user.save()
+        return user
+
     class Meta():
         model = DannieAutorizatsii
         fields = [
