@@ -10,6 +10,12 @@ class PolzovatelCreateView(LoginRequiredMixin, CreateView):
     template_name = "polzovatel/create_polzovatel_form.html"
     success_url = "/polzovateli"
 
+    def get_form_kwargs(self):
+        print(self.request)
+        kwargs = super().get_form_kwargs()
+        kwargs["request"] = self.request
+        return kwargs
+
 class PolzovatelUpdateView(LoginRequiredMixin, UpdateView):
     form_class = PolzovatelManagerForm
     model = Polzovatel

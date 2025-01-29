@@ -1,8 +1,16 @@
+from django import forms
 from django.forms import ModelForm
 
-from turizm_core.models import Turoperator
+from turizm_core.models import DannieAutorizatsii, Turoperator
 
 class TuroperatorForm(ModelForm):
+    dannie_autorizatsii = forms.ModelChoiceField(
+        queryset=DannieAutorizatsii.objects.filter(role_id="tour_operator"),
+        label="Данные авторизации",
+        error_messages={
+            "required": "Это поле обязательное"
+        }
+    )
     class Meta:
         model = Turoperator
         fields = [
@@ -12,15 +20,11 @@ class TuroperatorForm(ModelForm):
             "nazvanie_companii",
         ]
         labels = {
-            "dannie_autorizatsii": "Данные авторизации",
             "inn": "ИНН",
             "kpp": "КПП",
             "nazvanie_companii": "Название компании",
         }
         error_messages = {
-            "dannie_autorizatsii": {
-                "required": "Это поле обязательное",
-            },
             "inn": {
                 "required": "Это поле обязательное",
             },
