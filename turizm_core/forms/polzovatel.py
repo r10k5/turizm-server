@@ -37,6 +37,9 @@ class PolzovatelManagerForm(ModelForm):
 
         super(PolzovatelManagerForm, self).__init__(*args, **kwargs)
 
+        self.fields["pasport"].required = False
+        self.fields["zagranpasport"].required = False
+
         if self.request.user.role.id == "manager":
             self.fields.pop("dannie_autorizatsii")
 
