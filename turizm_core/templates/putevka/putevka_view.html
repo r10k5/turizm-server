@@ -18,15 +18,17 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             background-color: #fff;
             transition: box-shadow 0.2s;
-            cursor: pointer;
+            {% if user.role.id != 'manager' %}cursor: pointer;{% endif %}
             position: relative;
             display: flex;
             flex-direction: column;
         }
+        {% if user.role.id != 'manager' %}
         .putevka-card:hover {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
             border: 1px solid #4CAF50;
         }
+        {% endif %}
         .putevka-header {
             font-size: 18px;
             font-weight: bold;
@@ -203,12 +205,14 @@
     </form>
 
     <div class="putevka-cards">
-        <a class="putevka-card add-putevka-card" href="/putevka">
-            <div class="plus-icon">+</div>
-        </a>
+        {% if user.role.id != 'manager' %}
+            <a class="putevka-card add-putevka-card" href="/putevka">
+                <div class="plus-icon">+</div>
+            </a>
+        {% endif %}
         {% for putevka in putevki %}
-        <a class="putevka-card" href="/putevki/{{ putevka.id }}">
-            {% if user.role.id != 'tour_operator' %}
+        <a class="putevka-card" {% if user.role.id != 'manager' %}href="/putevki/{{ putevka.id }}"{% endif %}>
+            {% if user.role.id == 'admin' %}
                 <form class="cancel-form" method="POST" action="/putevka/delete/{{ putevka.id }}" onsubmit="return confirm('Вы действительно хотите удалить путёвку #{{ putevka.id }}?')">
                     {% csrf_token %}
                     <button class="cancel-btn">

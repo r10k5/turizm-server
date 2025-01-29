@@ -22,15 +22,17 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             background-color: #fff;
             transition: box-shadow 0.2s;
-            cursor: pointer;
+            {% if request.user.role.id != 'manager' %}cursor: pointer;{% endif %}
             position: relative;
             display: flex;
             flex-direction: column;
         }
+        {% if request.user.role.id != 'manager' %}
         .otel-card:hover {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
             border: 1px solid #4CAF50;
         }
+        {% endif %}
         .otel-card img {
             width: calc(100% + 40px);
             height: 200px;
@@ -119,12 +121,14 @@
 {% block content %}
     <h1>Список отелей</h1>
     <div class="otel-cards">
+        {% if request.user.role.id != 'manager' %}
         <a class="otel-card add-hotel-card" href="/otel">
             <div class="plus-icon">+</div>
         </a>
+        {% endif %}
         {% for otel in oteli %}
-        <a class="otel-card" href="/oteli/{{ otel.id }}">
-            {% if request.user.role.id != "tour_operator" %}
+        <a class="otel-card" {% if request.user.role.id != 'manager' %}href="/oteli/{{ otel.id }}"{% endif %}>
+            {% if request.user.role.id == 'admin' %}
                 <form class="cancel-form" action="/otel/delete/{{ otel.id }}" method="post" onsubmit="return confirm('Вы действительно хотите удалить отель: {{ otel.nazvanie }}?')">
                     {% csrf_token %}
                     <button class="cancel-btn">
