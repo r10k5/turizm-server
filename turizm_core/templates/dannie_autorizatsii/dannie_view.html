@@ -1,66 +1,160 @@
 {% extends "base.html" %}
 
-{% block content %}
-    <h1>Список данных авторизации</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Идентификатор</th>
-                <th>Эл. почта</th>
-                <th>Роль</th>
-                <th>Имя пользователя</th>
-                <th>Номер телефона</th>
-                <th>Рабочий номер телефона</th>
-                <th>Рабочая эл. почта</th>
-                <th colspan="2">Действия</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for dan in dannie %}
-                <tr>
-                    <td>{{ dan.id }}</td>
-                    <td>{{ dan.email }}</td>
-                    <td>{{ dan.role }}</td>
-                    <td>{{ dan.username }}</td>
-                    <td>{{ dan.nomer_telephona }}</td>
-                    <td>{{ dan.rabochiy_nomer_telephona }}</td>
-                    <td>{{ dan.rabochiy_emale }}</td>
-                    <td>
-                        <a href="/dannie-autorizatsii/{{ dan.id }}">Редактировать</a>
-                    </td>
-                    <td>
-                        <form
-                            method="POST"
-                            action="/dannie-autorizatsii/delete/{{ dan.id }}"
-                            onsubmit="return confirm('Вы действительно хотите удалить адрес: {{ dan }}?')"
-                        >
-                            {% csrf_token %}
+{% block title %}
+    Список данных авторизации
+{% endblock %}
 
-                            <button type="submit">Удалить</button>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <br />
-    <a href="/dannie-autorizatsii/create">Добавить новые данные авторизации</a>
-
+{% block head %}
     <style>
-        th {
-            text-align: left;
+        .dannie-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
-
-        th, td {
-            padding: 8px;
+        .dannie-card {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 400px;
+            height: 270px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            transition: box-shadow 0.2s;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            flex-direction: column;
         }
-
-        table, tr, td, th {
-            border: 1px solid black;
+        .dannie-card:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border: 1px solid #4CAF50;
         }
-
-        table {
-            border-collapse: collapse;
+        .dannie-card-header {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .dannie-card-header .dannie-username {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            flex-grow: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .dannie-card-header .dannie-id {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            text-align: right;
+            white-space: nowrap;
+            flex-srink: 0;
+        }
+        .dannie-card-content {
+            padding: 20px 0 0 0;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .dannie-card .email {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .dannie-card .role {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .dannie-card .phone,
+        .dannie-card .work-phone,
+        .dannie-card .work-email {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .dannie-card .cancel-form {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+        .dannie-card .cancel-btn {
+            background-color: #f44336;
+            color: #fff;
+            border: none;
+            border-radius: 100%;
+            width: 24px;
+            height: 24px;
+            opacity: 0;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .dannie-card:hover .cancel-btn {
+            opacity: 1;
+        }
+        .dannie-card .cancel-btn:hover {
+            transform: scale(1.5);
+        }
+        .add-dannie-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border: 2px dashed #4CAF50;
+            color: #4CAF50;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .add-dannie-card:hover {
+            background-color: #e8f5e9;
+            border-color: #45a049;
+            color: #45a049;
+            transform: scale(1.05);
+        }
+        .add-dannie-card .plus-icon {
+            font-size: 48px;
+            font-weight: bold;
+            line-height: 1;
         }
     </style>
+{% endblock %}
+
+{% block content %}
+    <h1>Список данных авторизации</h1>
+
+    <div class="dannie-cards">
+        <a class="dannie-card add-dannie-card" href="/dannie-autorizatsii/create">
+            <div class="plus-icon">+</div>
+        </a>
+        {% for dan in dannie %}
+        <a class="dannie-card" href="/dannie-autorizatsii/{{ dan.id }}">
+            <form class="cancel-form" action="/dannie-autorizatsii/delete/{{ dan.id }}" method="post" onsubmit="return confirm('Вы действительно хотите удалить данные авторизации: {{ dan }}?')">
+                {% csrf_token %}
+                <button class="cancel-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" fill="currentColor"/>
+                    </svg>
+                </button>
+            </form>
+            
+            <div class="dannie-card-header">
+                <h2 class="dannie-username">{{ dan.username }} ({{ dan.email }})</h2>
+                <p class="dannie-id">ID: {{ dan.id }}</p>
+            </div>
+            <div class="dannie-card-content">
+                <div class="role">Роль: {{ dan.role }}</div>
+                <div class="phone">Номер телефона: {{ dan.nomer_telephona }}</div>
+                <div class="work-phone">Рабочий телефон: {% if dan.rabochiy_nomer_telephona %}{{ dan.rabochiy_nomer_telephona }}{% else %}Не указан{% endif %}</div>
+                <div class="work-email">Рабочая почта: {% if dan.rabochiy_emale %}{{ dan.rabochiy_emale }}{% else %}Не указан{% endif %}</div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
 {% endblock content %}
